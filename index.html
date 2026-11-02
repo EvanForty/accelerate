@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Accelerate: accelerate particles, collide narratives, generate tokens</title>
+<meta name="description" content="Accelerate is a Solana launchpad of autonomous particle collider NFTs that collide emerging narratives into new coins on pump.fun and collect creator fees.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/logo.png">
+<meta name="theme-color" content="#220A37">
+<meta property="og:title" content="Accelerate: accelerate particles, collide narratives, generate tokens">
+<meta property="og:description" content="Autonomous particle collider NFTs that collide emerging narratives into new coins on pump.fun.">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+<style>
+:root{
+  --bg:#F2EEF7;--panel:#FFFFFF;--ink:#170A26;--soft:#45375A;--mute:#75688A;--rule:#DCD3E8;--edge:#170A26;--frame:#170A26;
+  --cy:#0098C7;--cy-ink:#00739A;--vi:#8A1FD1;--vi-ink:#7A1BB8;--on-vi:#FFFFFF;
+  --lw:#8F88A0;--ls:#6E6680;--ld:#3C3A44;--ring:#2A1B3D;
+  --grid:rgba(23,10,38,.045);--stripe:rgba(23,10,38,.035);
+  --f-head:'Tektur','Arial Black',sans-serif;
+  --f-ui:'Instrument Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'Fragment Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#220A37;--panel:#2A1142;--ink:#F1ECF7;--soft:#C7BBD6;--mute:#8C7DA0;--rule:#3E2659;--edge:#F1ECF7;--frame:#533479;
+    --cy:#18C8F5;--cy-ink:#5DDCFA;--vi:#B83CF2;--vi-ink:#D27BFF;--on-vi:#14051F;
+    --lw:#F2F0F5;--ls:#B9B3C4;--ld:#3C3A44;--ring:#2E1647;
+    --grid:rgba(255,255,255,.03);--stripe:rgba(255,255,255,.04);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#220A37;--panel:#2A1142;--ink:#F1ECF7;--soft:#C7BBD6;--mute:#8C7DA0;--rule:#3E2659;--edge:#F1ECF7;--frame:#533479;
+  --cy:#18C8F5;--cy-ink:#5DDCFA;--vi:#B83CF2;--vi-ink:#D27BFF;--on-vi:#14051F;
+  --lw:#F2F0F5;--ls:#B9B3C4;--ld:#3C3A44;--ring:#2E1647;
+  --grid:rgba(255,255,255,.03);--stripe:rgba(255,255,255,.04);color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background-color:var(--bg);color:var(--ink);font:400 15.5px/1.55 var(--f-ui);
+  background-image:radial-gradient(var(--grid) 1.2px,transparent 1.4px);background-size:22px 22px;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px dashed var(--vi-ink);outline-offset:3px}
+.wrap{max-width:1420px;margin:0 auto;padding:16px}
+.panel{background:var(--panel);border:1.5px solid var(--frame)}
+.ph{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0;padding:13px 18px;border-bottom:1px solid var(--rule);font:400 11.5px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+.ph small{color:var(--mute);letter-spacing:.03em}
+.ph .pix{height:18px;width:auto} .ph .logo{width:34px;flex:none}
+.ph .end{margin-left:auto}
+.pad{padding:18px}
+.tag{display:inline-block;font:400 10.5px/1 var(--f-mono);letter-spacing:.05em;padding:5px 7px;background:var(--ink);color:var(--bg);text-transform:uppercase}
+.tag.vi{background:var(--vi);color:var(--on-vi)}
+.tag.cy{background:var(--cy);color:#041218}
+.tag.ghost{background:transparent;color:var(--soft);border:1px solid var(--rule)}
+.pix rect{fill:var(--ink)} .pix .c{fill:var(--cy)} .pix .v{fill:var(--vi)}
+.small{font-size:13px;color:var(--soft)}
+.warn{color:#B42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{color:#FF9B8C}}
+:root[data-theme="dark"] .warn{color:#FF9B8C}
+.logo{display:block;width:100%;height:auto}
+.logo{--l-w:var(--lw);--l-s:var(--ls);--l-d:var(--ld);--l-c:#18AAF5;--l-C:#82EBFF;--l-v:#B83CF2;--l-V:#E68CFF}
+.logo.idle{--l-c:var(--mute);--l-v:var(--mute);--l-C:var(--ls);--l-V:var(--ls)}
+
+/* header */
+.top{margin-bottom:16px}
+.nav{display:grid;grid-template-columns:auto 1fr auto}
+.brand{display:flex;align-items:center;gap:12px;padding:8px 18px;border-right:1px solid var(--rule);text-decoration:none}
+.brand .logo{width:72px;flex:none}
+.brand b{display:block;font:900 26px/1 var(--f-head);letter-spacing:.03em;text-transform:uppercase}
+.brand small{display:block;margin-top:5px;font:400 10.5px/1 var(--f-mono);color:var(--mute);letter-spacing:.05em}
+.tabs{display:grid;grid-template-columns:repeat(7,minmax(96px,1fr));overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:15px 8px 12px;border-right:1px solid var(--rule);text-decoration:none;color:var(--soft);font:400 10.5px/1 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.tabs a em{position:absolute;top:7px;right:8px;font-style:normal;color:var(--mute);font-size:9.5px}
+.tabs a .pix{height:22px;width:auto}
+.tabs a:hover{background:var(--stripe)}
+.tabs a[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -4px 0 var(--vi)}
+.walletcell{position:relative;display:flex;align-items:center;padding:12px 18px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font:700 14px/1.2 var(--f-ui);border:1.5px solid var(--edge);background:var(--panel);color:var(--ink);padding:12px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--edge);text-decoration:none;white-space:nowrap}
+.btn:active:not([disabled]){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--edge)}
+.btn.vi{background:var(--vi);color:var(--on-vi);border-color:var(--edge)}
+.btn.dark{background:var(--ink);color:var(--bg)}
+.btn.sm{padding:7px 10px;font-size:12.5px;box-shadow:2px 2px 0 var(--edge)}
+.btn.wide{width:100%;padding:19px;font-size:16px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn .dot{width:9px;height:9px;background:currentColor;display:inline-block}
+.btn.connected .dot{background:var(--vi);outline:1.5px solid var(--edge)}
+.chip{font:400 11px/1 var(--f-mono);letter-spacing:.02em;border:1.5px solid var(--edge);background:var(--panel);padding:7px 10px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--vi);color:var(--on-vi);border-color:var(--edge)}
+.chip[disabled]{opacity:.35;cursor:not-allowed}
+.chip.cyp[aria-pressed="true"]{background:var(--cy);color:#041218}
+.link{font:700 13px/1 var(--f-ui);border:0;background:none;padding:3px 0;border-bottom:3px solid var(--vi);cursor:pointer;text-decoration:none}
+
+/* collider floor */
+.grid-hero{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:16px;align-items:start}
+.col{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-content:start;min-width:0}
+label,.lbl{display:block;font:400 10.5px/1.2 var(--f-mono);color:var(--soft);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.big{display:flex;align-items:baseline;gap:10px;margin:14px 0 6px}
+.big b{font:900 92px/.85 var(--f-head)}
+.big span{font:700 22px var(--f-head);color:var(--mute)}
+.kv4{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);margin:14px 0 18px}
+.kv4>div{padding:12px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.kv4>div:nth-child(2n){border-right:0}
+.kv4>div:nth-last-child(-n+2){border-bottom:0}
+.kv4 b{font:400 15.5px/1.2 var(--f-mono)}
+.hero-copy{padding:26px 28px 6px}
+h1{font:900 clamp(34px,4.2vw,62px)/.98 var(--f-head);text-transform:uppercase;margin:0 0 14px;overflow-wrap:anywhere}
+h1 .a{color:var(--cy-ink)} h1 .b{color:var(--vi-ink)}
+.hero-copy p{font-size:16.5px;color:var(--soft);margin:0;max-width:64ch}
+.ringwrap{padding:14px 18px 0}
+.ringsvg{display:block;width:100%;height:auto;border:1.5px solid var(--frame);background:var(--ring)}
+.ringsvg .track{fill:none;stroke:#4A3466;stroke-width:5}
+.ringsvg .trackin{fill:none;stroke:#160725;stroke-width:2}
+.ringsvg .mag{fill:#E7E3EE} .ringsvg .magin{fill:#2A1B3D}
+.ringsvg .beamL{fill:#18AAF5} .ringsvg .beamR{fill:#B83CF2}
+.ringsvg .lab{font:400 5.2px var(--f-mono);fill:#C7BBD6;letter-spacing:.06em}
+.ringsvg .pair{font:800 11px var(--f-head);fill:#F1ECF7}
+.ringsvg .tk{font:400 6px var(--f-mono);fill:#5DDCFA}
+.ringsvg .burst{animation:burst 1.6s ease-out both;transform-box:fill-box;transform-origin:center}
+@keyframes burst{0%{opacity:0;transform:scale(.2)}20%{opacity:1;transform:scale(1.2)}100%{opacity:.85;transform:scale(1)}}
+.heat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 18px;padding:16px 18px 18px}
+.heat div{font:400 11.5px var(--f-mono)}
+.heat .hb{height:6px;background:var(--rule);margin-top:5px;position:relative}
+.heat .hb s{position:absolute;inset:0 auto 0 0;text-decoration:none;background:linear-gradient(90deg,var(--cy),var(--vi))}
+.heat b{float:right;font-weight:400;color:var(--soft)}
+.kv2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.kv2>div{padding:14px 18px}
+.kv2>div+div{border-left:1px solid var(--rule)}
+.kv2 b{font:800 20px/1.1 var(--f-head);text-transform:uppercase;overflow-wrap:anywhere}
+.btnrow{display:flex;gap:12px;padding:18px;border-top:1px solid var(--rule)}
+.btnrow .btn{flex:1}
+.feed{display:grid;grid-template-columns:repeat(6,1fr)}
+.feed>div{padding:18px 14px;text-align:center;border-right:1px solid var(--rule)}
+.feed>div:last-child{border-right:0}
+.feed .pr{font:800 15px var(--f-head);display:block;margin-bottom:6px}
+.feed .pr i{font-style:normal;color:var(--mute);margin:0 4px}
+.feed b{display:block;font:800 19px var(--f-head)}
+.feed p{margin:2px 0 6px;font-size:13px;color:var(--soft);line-height:1.35}
+.ago{font:400 10.5px var(--f-mono);color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.empty{padding:28px 20px;color:var(--soft);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.empty .logo{width:72px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr)}
+.steps>div{padding:20px 18px 24px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.steps>div:nth-child(4n){border-right:0}
+.steps>div:nth-last-child(-n+3){border-bottom:0}
+.steps .pix{height:26px;width:auto;margin-bottom:12px} .steps .logo{width:56px;margin-bottom:12px}
+.steps .n{display:block;font:400 11px var(--f-mono);color:var(--vi-ink);margin-bottom:6px}
+.steps h3{margin:0 0 6px;font:800 18px/1.15 var(--f-head);text-transform:uppercase}
+.steps p{margin:0;color:var(--soft);font-size:14.5px}
+.mt{margin-top:16px}
+
+/* deploy */
+.grid-2{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
+.step h3{font:900 26px/1.05 var(--f-head);text-transform:uppercase;margin:0 0 8px}
+.step p{margin:0 0 16px;color:var(--soft);max-width:68ch}
+.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.opt{text-align:left;border:1.5px solid var(--edge);background:var(--panel);padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.opt[aria-pressed="true"]{box-shadow:inset 0 0 0 3px var(--vi),4px 4px 0 var(--edge)}
+.opt b{font:800 15px/1.15 var(--f-head);text-transform:uppercase;margin-top:6px}
+.opt>span{color:var(--soft);font-size:13px}
+.opt dl{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;margin:10px 0 0;font:400 11px var(--f-mono)}
+.opt dt{color:var(--mute)} .opt dd{margin:0;text-align:right}
+.rings{display:flex;gap:3px;height:14px;align-items:center}
+.rings i{width:12px;height:8px;border:2px solid var(--vi);border-radius:50%}
+.note{font-size:13.5px;color:var(--soft);margin:14px 0 0;padding-left:12px;border-left:3px solid var(--vi)}
+.youget{display:flex;gap:18px;align-items:center;padding:18px}
+.youget .logo{width:140px;flex:none}
+.youget b{display:block;font:900 30px/1 var(--f-head)}
+.youget span{color:var(--soft);font-size:14px}
+.rows>div{display:flex;justify-content:space-between;gap:16px;align-items:baseline;padding:14px 18px;border-bottom:1px solid var(--rule)}
+.rows>div:last-child{border-bottom:0}
+.rows label{margin:0}
+.rows b{font:400 14px var(--f-mono);text-align:right}
+
+/* my colliders */
+.kv5{display:grid;grid-template-columns:repeat(5,1fr)}
+.kv5>div{padding:16px 18px;border-right:1px solid var(--rule)}
+.kv5>div:last-child{border-right:0}
+.kv5 b{display:block;font:400 19px/1.2 var(--f-mono)}
+.kv5 b.g{color:var(--vi-ink)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;padding:18px;border-top:1px solid var(--rule)}
+.inv{display:flex;flex-wrap:wrap;gap:8px;padding:16px 18px}
+.inv span{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--edge);padding:6px 10px;font:400 12px var(--f-mono)}
+.inv span i{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--cy),var(--vi));display:inline-block}
+.crow{border-top:1px solid var(--rule)}
+.crow:first-of-type{border-top:0}
+.chead{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr)}
+.chead>div{padding:18px}
+.chead>div+div{border-left:1px solid var(--rule)}
+.chead h3{margin:0 0 8px;font:900 24px/1 var(--f-head);text-transform:uppercase;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin:10px 0 14px}
+.stats b{display:block;font:400 14px var(--f-mono)}
+.chambers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--rule)}
+.ch{padding:14px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
+.ch:last-child{border-right:0}
+.ch b{font:800 13px var(--f-head);text-transform:uppercase}
+.ch .pairl{font:800 16px var(--f-head)}
+.ch .pairl i{font-style:normal;color:var(--mute);margin:0 4px}
+.energy{height:10px;border:1.5px solid var(--edge);position:relative;overflow:hidden}
+.energy i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--cy),var(--vi))}
+.ch small{font-size:12px;color:var(--soft)}
+.ch .seg{gap:4px}
+.ch .chip{padding:5px 7px;font-size:10px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.up{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--rule)}
+.up:last-child{border-bottom:0}
+.up b{font:700 14.5px var(--f-ui)}
+.up small{grid-column:1;font-size:12.5px;color:var(--soft)}
+.up .btn,.up .seg{grid-row:1 / span 2;grid-column:2}
+.pips{display:inline-flex;gap:3px;margin-left:8px;vertical-align:1px}
+.pips i{width:9px;height:9px;border:1px solid var(--edge);display:inline-block}
+.pips i.on{background:var(--vi)}
+.rentbox{border:1px solid var(--rule);padding:12px 14px;margin-bottom:10px;background:var(--stripe)}
+.rentbox b{display:block;font:700 14.5px var(--f-ui);margin-bottom:2px}
+.rentbox p{margin:0 0 10px;font-size:13px;color:var(--soft)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg>span{font:400 10.5px var(--f-mono);color:var(--mute);letter-spacing:.05em;text-transform:uppercase;margin-right:4px}
+.filters{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:16px 18px}
+
+/* rares */
+.rares{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.rare{padding:16px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:6px}
+.rare .orb{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:900 16px var(--f-head);color:#14051F}
+.rare h4{margin:4px 0 0;font:800 18px/1 var(--f-head);text-transform:uppercase}
+.rare p{margin:0 0 8px;font-size:13px;color:var(--soft)}
+.rare .btns{margin-top:auto}
+.lists{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.lcard{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px;padding:16px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.lcard .logo{width:110px}
+.lcard h4{margin:0 0 6px;font:900 22px/1 var(--f-head);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lcard dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0 0 12px;font:400 11.5px var(--f-mono)}
+.lcard dt{color:var(--mute)} .lcard dd{margin:0;text-align:right}
+.lcard .btn{width:100%;white-space:normal;text-align:center}
+
+/* how */
+.collide{display:grid;grid-template-columns:1fr auto 1fr auto 1.2fr;gap:14px;align-items:center;padding:20px}
+.collide>div{border:1.5px solid var(--edge);padding:14px}
+.collide>div b{display:block;font:800 18px var(--f-head);text-transform:uppercase}
+.collide>div span{font-size:13.5px;color:var(--soft)}
+.collide>i{font:800 22px var(--f-head);font-style:normal;color:var(--mute)}
+.collide .res{background:linear-gradient(90deg,color-mix(in srgb,var(--cy) 18%,transparent),color-mix(in srgb,var(--vi) 18%,transparent))}
+.split{padding:22px 22px 6px}
+.squares{display:grid;grid-template-columns:repeat(50,1fr);gap:2px}
+.squares i{aspect-ratio:1;display:block}
+.sq-a{background:var(--vi)} .sq-b{background:var(--ink)} .sq-c{background:var(--mute);opacity:.5}
+.splitkeys{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);margin-top:18px}
+.splitkeys>div{padding:16px 22px;border-right:1px solid var(--rule)}
+.splitkeys>div:last-child{border-right:0}
+.splitkeys .k{display:flex;gap:8px;align-items:center;font:700 15px var(--f-ui)}
+.splitkeys .k i{width:13px;height:13px;display:inline-block}
+.splitkeys b{display:block;font:900 48px/1 var(--f-head);margin:8px 0 4px}
+.splitkeys p{margin:0;color:var(--soft);font-size:14px}
+.fly{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--rule)}
+.fly>div{padding:16px;border-right:1px solid var(--rule)}
+.fly>div:last-child{border-right:0;background:var(--stripe)}
+.fly .n{font:400 12px var(--f-mono);color:var(--vi-ink)}
+.fly b{display:block;font:800 15px/1.15 var(--f-head);text-transform:uppercase;margin:4px 0}
+.fly span{font-size:13px;color:var(--soft)}
+.pbody{padding:18px 22px}
+.pbody p{margin:0 0 10px;color:var(--soft)}
+.pbody p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{font:400 10.5px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--soft);text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--stripe)}
+td{padding:12px 14px;border-bottom:1px solid var(--rule);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right;font-family:var(--f-mono)}
+.tw{overflow-x:auto}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+
+/* docs */
+.docs{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:start}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.toc ol{list-style:none;margin:0;padding:8px 18px 14px}
+.toc li button{display:flex;gap:14px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:10px 0;cursor:pointer;font-size:14.5px}
+.toc li button span{font:400 10.5px var(--f-mono);color:var(--mute);padding-top:3px}
+.doc{scroll-margin-top:16px}
+.doc .body{padding:20px 24px 24px;max-width:80ch}
+.doc .body p,.doc .body li{color:var(--soft)}
+.doc .body strong{color:var(--ink)}
+.doc .body h4{font:800 16px var(--f-head);text-transform:uppercase;margin:20px 0 6px}
+.doc code{font:400 12px var(--f-mono);background:var(--stripe);padding:2px 5px}
+.doc .tw{margin:12px 0;border:1px solid var(--rule)}
+details{border-bottom:1px solid var(--rule)}
+details summary{cursor:pointer;padding:13px 0;font-weight:700;list-style:none}
+details summary::before{content:"▸";display:inline-block;width:18px;font-size:12px}
+details[open] summary::before{content:"▾"}
+details p{margin:0 0 14px 18px}
+
+/* overlays */
+.scrim{position:fixed;inset:0;background:rgba(10,3,18,.65);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{max-width:640px;width:100%;max-height:calc(100% - 32px);overflow:auto;box-shadow:6px 6px 0 var(--vi)}
+.x{margin-left:auto;background:none;border:0;font:700 18px var(--f-mono);cursor:pointer;padding:0 4px}
+.wlist{display:grid;gap:10px;padding:18px}
+.wopt{display:flex;align-items:center;gap:14px;border:1.5px solid var(--edge);background:var(--panel);padding:12px 14px;cursor:pointer;text-align:left;font:700 15px var(--f-ui);text-decoration:none}
+.wopt img,.wopt .ph-ico{width:28px;height:28px;flex:none}
+.wopt .ph-ico{background:var(--mute)}
+.wopt em{margin-left:auto;font:400 10.5px var(--f-mono);font-style:normal;color:var(--vi-ink);text-transform:uppercase;letter-spacing:.05em}
+.wopt:hover{background:var(--stripe)}
+.menu{position:absolute;right:18px;top:calc(100% - 4px);z-index:40;min-width:260px;box-shadow:4px 4px 0 var(--vi)}
+.menu .rows>div{padding:12px 16px}
+.mitems{display:grid;border-top:1px solid var(--rule)}
+.mitems button,.mitems a{text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);padding:12px 16px;cursor:pointer;font:600 14px var(--f-ui);text-decoration:none}
+.mitems>*:last-child{border-bottom:0}
+.toasts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:grid;gap:8px;z-index:60;max-width:min(380px,calc(100% - 32px))}
+.toast{background:var(--ink);color:var(--bg);padding:12px 16px;font:600 14px var(--f-ui);box-shadow:4px 4px 0 var(--vi)}
+footer{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;padding:22px 2px 36px;font-size:13px;color:var(--soft)}
+
+@media (max-width:1200px){
+  .grid-hero{grid-template-columns:minmax(0,1fr)}
+  .grid-hero>.hero{order:-1}
+  .grid-2{grid-template-columns:minmax(0,1fr)}
+  .opts{grid-template-columns:repeat(3,1fr)}
+  .feed{grid-template-columns:repeat(3,1fr)}
+  .feed>div:nth-child(3n){border-right:0}
+  .feed>div:nth-child(-n+3){border-bottom:1px solid var(--rule)}
+  .docs{grid-template-columns:minmax(0,1fr)}
+  .toc{position:static}
+  .kv5{grid-template-columns:repeat(3,1fr)}
+  .kv5>div:nth-child(3){border-right:0}
+  .kv5>div:nth-child(-n+3){border-bottom:1px solid var(--rule)}
+  .chead{grid-template-columns:130px minmax(0,1fr)}
+  .chead>div:last-child{grid-column:1 / -1;border-left:0;border-top:1px solid var(--rule)}
+  .chambers{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ch{border-bottom:1px solid var(--rule)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .steps>div{border-right:1px solid var(--rule)!important;border-bottom:1px solid var(--rule)!important}
+  .steps>div:nth-child(2n){border-right:0!important}
+  .fly{grid-template-columns:repeat(3,1fr)}
+  .fly>div{border-bottom:1px solid var(--rule)}
+  .collide{grid-template-columns:1fr auto 1fr}
+  .collide>i:nth-of-type(2){display:none}
+  .collide .res{grid-column:1 / -1}
+}
+@media (max-width:1100px){
+  .nav{grid-template-columns:1fr auto}
+  .brand{border-right:0}
+  .tabs{grid-column:1 / -1;grid-row:2;display:flex;border-top:1px solid var(--rule)}
+  .tabs a{flex:1 0 96px}
+}
+@media (max-width:760px){
+  .hero-copy{padding:24px 20px 6px}
+  .heat{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .steps>div{border-right:0!important}
+}
+@media (max-width:700px){
+  .wrap{padding:10px}
+  .two,.opts,.fly{grid-template-columns:minmax(0,1fr)}
+  .fly>div{border-right:0}
+  .feed{grid-template-columns:1fr 1fr}
+  .feed>div{border-bottom:1px solid var(--rule)}
+  .feed>div:nth-child(2n){border-right:0}
+  .feed>div:nth-child(3n){border-right:1px solid var(--rule)}
+  .feed>div:nth-child(6n){border-right:0}
+  .kv5{grid-template-columns:1fr 1fr}
+  .kv5>div{border-right:1px solid var(--rule)!important;border-bottom:1px solid var(--rule)}
+  .kv5>div:nth-child(2n){border-right:0!important}
+  .splitkeys{grid-template-columns:1fr}
+  .splitkeys>div{border-right:0;border-bottom:1px solid var(--rule)}
+  .squares{grid-template-columns:repeat(25,1fr)}
+  .big b{font-size:70px}
+  .brand{padding:8px 12px;gap:8px}
+  .brand .logo{width:52px}
+  .brand b{font-size:19px}
+  .walletcell{padding:10px 12px}
+  .walletcell .btn{padding:9px 10px;font-size:12.5px;gap:7px}
+  .chead{grid-template-columns:minmax(0,1fr)}
+  .chead>div+div{border-left:0;border-top:1px solid var(--rule)}
+  .chead .logo{max-width:140px}
+  .chambers{grid-template-columns:minmax(0,1fr)}
+  .ch{border-right:0}
+  .lists{grid-template-columns:minmax(0,1fr)}
+  .collide{grid-template-columns:minmax(0,1fr)}
+  .collide>i{display:none}
+  .up{grid-template-columns:minmax(0,1fr)}
+  .up .btn,.up .seg{grid-row:auto;grid-column:1;justify-self:start;margin-top:6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ringsvg .orbit{display:none}
+  .ringsvg .burst{animation:none}
+  .btn:active:not([disabled]){transform:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="sprites"></defs></svg>
+
+<div class="wrap">
+  <header class="top panel">
+    <div class="nav">
+      <a class="brand" href="#ring" aria-label="Accelerate home">
+        <svg class="logo" viewBox="0 0 77 44" shape-rendering="crispEdges" aria-hidden="true"><use href="#lg"/></svg>
+        <span><b>Accelerate</b><small>$ACCELERATE</small></span>
+      </a>
+      <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+      <div class="walletcell">
+        <button class="btn vi" id="walletBtn" data-act="wallet" aria-haspopup="true"><i class="dot"></i><span>Connect wallet</span></button>
+        <div class="menu panel" id="walletMenu" hidden></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <footer>
+    <span>Accelerate. Accelerate particles. Collide narratives. Generate tokens.</span>
+    <span>Creator-fee revenue depends on real trading activity; collisions and launches do not guarantee returns.</span>
+  </footer>
+</div>
+
+<div id="overlay"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ---------- logo pixel grid ---------- */
+const ACC = ["..................................wwwwwwww...................................", "..................................wwwwwwww...................................", "...............................ww.w......w..ww...............................", "...............................ww.s.........ww...............................", "........................wwwwww.dd.s.vvvv....dd.wwwwww........................", "...................wwwwsss.....dd.s.........dd.....sswwww....................", "................wwssssdss..cc..dd.w.........dd.vvv..s.wsssdww................", "...............wsssss..cccccc..dd.ssssssss..dd.vvvvvvv.ssssssw...............", ".............swsss.....cccCCC..dd.ssssssss..dd.vvvvvvv.....sssw..............", "...........wssss...ccccCwwCCC..................vvvswwvvvv....sssww...........", ".........wwsss....ccCwwCCC.....vv...........vv.....vvvwwvvvvv..sssw..........", "........ssss...ccCwwCCC...............................vvvwwvvv...sss.........", "..........s....cwwcc..................w..................vvwwvvv..ss.........", ".......ww.....cwc.....................w....................vvwvv....ww.......", ".....ssssd..ccs...............................................wvv..dsss......", "............cw.................................................w.............", ".............................CC.......v......vv................s.............", "...wwwwwwww...........................v...........................wwwwwwww...", "..wwwwwwddd.www......................cvv......................www.ddwwwwwww..", "wwwwwwww.......w...........C....CC..ccwvv..v.................w......wwwwwwww.", "ss....ww.......w............c.....cccCwvvv.....v.............w..vvv..ww....s.", "ss.C..ws.ccCc..wcccccccccc.....ccccCCwwwvvvvv......vvvvvvvvvvw.vvvv..ww.vv.s.", "ss.C..ss.cCwCC.wcccccccccccccccccCcwwwwwwvvvvvvvvvvvvvvvvvvvvw.vwwv.www.vv.s.", "ss.C..ss.cCwCC.wcwwwwwwwwwwwwCwssCwwwwwwwwvwwwVswwwwwwwwwwwwvw.vwwv.sss.vv.s.", "ss.C..ss.ccCc..wcccccccccc.....cccccCwwwvvvvvv....vvvvvvvvvvvw.vvvv.sss.vv.s.", "ss.C..ss..ccc..w..................ccccwvvv...................w..vvv.sss....s.", ".s....ss.......w....................ccwvv....................w......sss....s.", "..ssssss..d.www.................CC...cvv...v..................wss.d.sssssss..", "...ssssssss...............cc..........v..........v................ssssssss...", "...........................c..........v..........v............sv.............", "......sss.....wc.............................................vw.....sss......", "......sss.....cwC.....................w....................vvwv.....ss.......", "..............ccCwCc....................................vvvvvvv..............", ".........sss...ccCwwCCC...............................vvwwvvvv...sss.........", ".........sssss...cccCCCCCC.....ww.wwwwwwww..ww.....vvvwvvvvv...ssss..........", "...........sssss...ccccCCCCCC..ww.wwwwwwww..ww.vvvvvvvvvv....sssss...........", "..............ssss.....cccccc..dd.s.........dd.vvvvvvv.....ssss..............", "................sssss.....ccc..dd.s.........dd.vvvv....ssssss................", "...................sssssss.....dd.s.vvvv....dd.....ssssss....................", "...................sssssss......d.s..........d.....ssssss....................", "........................wwwwws....s......s..dd.wwwwww........................", "..................................ssssssss...................................", "..................................ssssssss...................................", "............................................................................."];
+
+/* ---------- config ---------- */
+const DAY = 86400, HOUR = 3600;
+const CFG = {
+  RPC: 'https://api.mainnet-beta.solana.com', // swap for your own RPC (Helius, Triton…) when you deploy
+  X: 'https://x.com/AccelerateRent',
+  SUPPLY: 1000, MINT0: 0.25, MINT1: 1.25,
+  OPER: 0.60, BURN: 0.25, OPS: 0.15,
+  RENT_OWNER: 0.90, RENT_BURN: 0.10, SALE_ROYALTY: 0.05,
+  ACCEL_MIN: 75, DISCOVER_MIN: 35,
+  PRICE0: 0.0000012, TOKEN_SUPPLY: 1e9,
+  START_T: 2 * DAY + 9 * HOUR,
+  OTHER_RATE: 4 / 1440
+};
+const TIERS = [
+  { name: 'Linear Accelerator', short: 'Linear', slots: 1, unlock: 0, auto: false, cap: 'One collision at a time' },
+  { name: 'Synchrotron', short: 'Synchrotron', slots: 2, unlock: 30000, auto: false, cap: 'Multiple particle experiments' },
+  { name: 'Cyclotron', short: 'Cyclotron', slots: 3, unlock: 80000, auto: true, cap: 'Automated recurring collisions' },
+  { name: 'Hadron Collider', short: 'Hadron', slots: 4, unlock: 150000, auto: true, cap: 'Large-scale narrative combinations' },
+  { name: 'Quantum Collider', short: 'Quantum', slots: 5, unlock: 260000, auto: true, cap: 'Multi-agent experimental token generation' }
+];
+const NARR = [
+  { k: 'AI', name: 'AI' }, { k: 'DEFI', name: 'DeFi' }, { k: 'GAME', name: 'Gaming' }, { k: 'MEME', name: 'Memes' },
+  { k: 'RWA', name: 'RWA' }, { k: 'DEPIN', name: 'DePIN' }, { k: 'SOCL', name: 'Social' }, { k: 'PRIV', name: 'Privacy' }
+];
+const NN = Object.fromEntries(NARR.map(n => [n.k, n.name]));
+const RARES = [
+  { k: 'proton', name: 'Proton', sym: 'p', col: '#5DDCFA', p: 0.55, fn: 'Standard token generation', eff: '+5% coin output' },
+  { k: 'neutron', name: 'Neutron', sym: 'n', col: '#B9B3C4', p: 0.22, fn: 'Stable, reusable project blueprints', eff: '+15% trading life' },
+  { k: 'electron', name: 'Electron', sym: 'e', col: '#18C8F5', p: 0.13, fn: 'Faster AI execution', eff: '+30% acceleration speed' },
+  { k: 'boson', name: 'Boson', sym: 'H', col: '#D27BFF', p: 0.07, fn: 'Advanced multi-agent combinations', eff: '+1 collision chamber' },
+  { k: 'antimatter', name: 'Antimatter', sym: 'ā', col: '#FF5FD2', p: 0.03, fn: 'Experimental designs and rare mutations', eff: '+15% output, wider swings' }
+];
+const R = Object.fromEntries(RARES.map(x => [x.k, x]));
+const UP = {
+  mag: { name: 'Magnets', max: 5, cost: l => 5000 * l, eff: '+15% acceleration speed per level' },
+  det: { name: 'Detectors', max: 5, cost: l => 6000 * l, eff: 'Better collision success and rare discovery' }
+};
+const DURS = [{ h: 1, name: '1 hour', off: 0 }, { h: 24, name: '1 day', off: 0.10 }, { h: 168, name: '1 week', off: 0.25 }];
+
+/* ---------- utils ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function mulberry(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r = Math.random){ let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+const pick = (arr, r = Math.random) => arr[Math.floor(r() * arr.length)];
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const fmtSol = x => { x = +x || 0; return x >= 100 ? x.toFixed(1) : x >= 1 ? x.toFixed(2) : x >= 0.01 ? x.toFixed(3) : x > 0 ? x.toFixed(4) : '0'; };
+const fmtTok = x => { x = +x || 0; if (x >= 1e9) return (x/1e9).toFixed(2) + 'B'; if (x >= 1e6) return (x/1e6).toFixed(x >= 1e7 ? 1 : 2) + 'M'; if (x >= 1e3) return (x/1e3).toFixed(x >= 1e4 ? 0 : 1) + 'k'; return Math.round(x) + ''; };
+const pad2 = n => String(n).padStart(2, '0');
+function ago(t){ const s = S.t - t; if (s < 60) return 'just now'; if (s < HOUR) return Math.floor(s / 60) + ' min ago'; if (s < DAY) return `${Math.floor(s / HOUR)} h ${Math.floor(s % HOUR / 60)} min ago`; return Math.floor(s / DAY) + ' d ago'; }
+function left(t){ const s = Math.max(0, t - S.t); if (s < HOUR) return Math.max(1, Math.ceil(s / 60)) + ' min'; if (s < DAY) return `${Math.floor(s / HOUR)} h ${Math.floor(s % HOUR / 60)} min`; return `${Math.floor(s / DAY)} d ${Math.floor(s % DAY / HOUR)} h`; }
+const short = a => a ? a.slice(0, 4) + '…' + a.slice(-4) : '';
+const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const randAddr = r => Array.from({ length: 44 }, () => B58[Math.floor(r() * 58)]).join('');
+const mintPrice = n => CFG.MINT0 + (CFG.MINT1 - CFG.MINT0) * (Math.min(n, CFG.SUPPLY) - 1) / (CFG.SUPPLY - 1);
+const price = () => CFG.PRICE0 * (1 + S.burned / CFG.TOKEN_SUPPLY * 40);
+const r50 = x => Math.max(50, Math.round(x / 50) * 50);
+const rareOf = (c, k) => S.rares.some(x => x.inst === c.id && x.type === k);
+const slotsOf = c => TIERS[c.tier].slots + (rareOf(c, 'boson') ? 1 : 0);
+const accelMin = c => CFG.ACCEL_MIN * Math.pow(0.85, c.mag - 1) / (rareOf(c, 'electron') ? 1.3 : 1);
+const rareValue = x => r50(1500 * Math.pow(2.4, RARES.findIndex(q => q.k === x.type)));
+const pairName = (a, b) => `${NN[a]} × ${NN[b]}`;
+
+/* ---------- logo sprite (colours follow the theme) ---------- */
+(function(){
+  let r = ''; ACC.forEach((row, y) => { let x = 0; while (x < row.length) { const ch = row[x]; if (ch !== '.') { const s = x; while (x < row.length && row[x] === ch) x++; r += `<rect style="fill:var(--l-${ch})" x="${s}" y="${y}" width="${x - s}" height="1"/>`; } else x++; } });
+  document.getElementById('sprites').innerHTML = `<g id="lg">${r}</g>`;
+})();
+const logoSVG = (on = true, extra = '') => `<svg class="logo${on ? '' : ' idle'}" viewBox="0 0 77 44" shape-rendering="crispEdges" role="img" aria-label="Particle collider"><use href="#lg"/>${extra}</svg>`;
+function colArt(c){ let extra = ''; for (let i = 0; i < 5; i++) extra += `<rect x="${27 + i * 5}" y="42" width="4" height="2" fill="${i <= c.tier ? '#B83CF2' : '#3E2659'}"/>`; return logoSVG(c.ch.length > 0 || c.live > 0, extra); }
+function pix(rows){
+  const h = rows.length, w = Math.max(...rows.map(r => r.length)); let r = '';
+  rows.forEach((row, y) => [...row].forEach((c, x) => { if (c === '#') r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; else if (c === 'c') r += `<rect class="c" x="${x}" y="${y}" width="1" height="1"/>`; else if (c === 'v') r += `<rect class="v" x="${x}" y="${y}" width="1" height="1"/>`; }));
+  return `<svg class="pix" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+}
+const ICO = {
+  ring: pix(['..#####..','.#.....#.','#.......#','#ccc.vvv#','#.......#','.#.....#.','..#####..']),
+  deploy: pix(['...v...','..vvv..','...#...','.#####.','.#c.v#.','.#####.']),
+  mine: pix(['.#######.','#.......#','#....####','#....#v##','#....####','#.......#','.#######.']),
+  rare: pix(['...#...','..#v#..','.#vvv#.','#vvcvv#','.#vvv#.','..#v#..','...#...']),
+  rent: pix(['.###.....','#...#....','#.v.#####','#...#.#.#','.###.....']),
+  how: pix(['###...###','#v##.##v#','#..#.#..#','#.##.##.#','#..#.#..#','###.#.###']),
+  docs: pix(['######..','#....##.','#.vv..##','#......#','#.####.#','#......#','#.####.#','########']),
+  coin: pix(['..###..','.#vvv#.','#vv#vv#','#v###v#','#vv#vv#','.#vvv#.','..###..']),
+  burst: pix(['c...#...v','.c..#..v.','..c.#.v..','####v####','..v.#.c..','.v..#..c.','v...#...c']),
+  atom: pix(['.c.....v.','..c...v..','...###...','..#cvc#..','...###...','..v...c..','.v.....c.'])
+};
+const orb = x => `<span class="orb" style="background:${R[x.type].col}">${R[x.type].sym}</span>`;
+
+/* ---------- state ---------- */
+const KEY = 'accelerate-state-v1', KEYW = 'accelerate-wallet-v1';
+let S, cById = new Map();
+function reindex(){ cById = new Map(S.col.map(c => [c.id, c])); }
+function feedPush(x){ x.t = S.t; S.feed.unshift(x); if (S.feed.length > 60) S.feed.length = 60; }
+const hourly = c => c.rv / Math.max(6, Math.min(168, (S.t - c.t) / HOUR));
+const fair = (c, share) => r50(0.75 * share * Math.max(hourly(c), 0.0015 * slotsOf(c)) / price());
+const opIsUser = c => c.rent ? c.rent.user : c.user;
+const weightedNarr = (r = Math.random) => { const tot = NARR.reduce((a, n) => a + S.heat[n.k], 0); let x = r() * tot; for (const n of NARR) { x -= S.heat[n.k]; if (x <= 0) return n.k; } return NARR[0].k; };
+function bestPair(inv){
+  const have = NARR.filter(n => inv[n.k] > 0).sort((a, b) => S.heat[b.k] - S.heat[a.k]);
+  if (!have.length) return null;
+  if (have.length === 1) return inv[have[0].k] >= 2 ? [have[0].k, have[0].k] : null;
+  return [have[0].k, have[1].k];
+}
+
+function addOther(r){
+  const n = S.col.length + 1; if (n > CFG.SUPPLY) return;
+  const fee = mintPrice(n), x = r(), tier = x < 0.4 ? 0 : x < 0.68 ? 1 : x < 0.86 ? 2 : x < 0.96 ? 3 : 4;
+  const c = { id: n, owner: randAddr(r), user: false, tier, mag: 1 + Math.floor(r() * r() * 4), det: 1 + Math.floor(r() * r() * 4), auto: true, ch: [], live: 0, count: 0, unclaimed: 0, rentUn: 0, own: 0, rv: 0, list: null, rent: null, t: S.t };
+  if (r() < 0.1) c.list = { share: pick([0.5, 0.6, 0.7, 0.8], r), k: 0.8 + r() * 0.6, price: 0 };
+  S.burnSol += fee * 0.5; S.burned += fee * 0.5 / price() + TIERS[tier].unlock; S.ops += fee * 0.5;
+  S.col.push(c); cById.set(c.id, c);
+  if (c.list) c.list.price = r50(fair(c, c.list.share) * c.list.k);
+}
+function inject(c, a, b){ c.ch.push({ a, b, t0: S.t, until: S.t + accelMin(c) * 60 * (0.85 + Math.random() * 0.3) }); S.ver++; }
+function collide(c, chm){
+  const success = Math.random() < 0.72 + 0.05 * c.det;
+  const user = opIsUser(c);
+  if (!success) { feedPush({ k: 'fizzle', col: c.id, a: chm.a, b: chm.b }); if (user && S.speed <= 60) toast(`${pairName(chm.a, chm.b)} fizzled in collider #${c.id}. No token this time.`); S.ver++; return; }
+  const same = chm.a === chm.b, anti = rareOf(c, 'antimatter');
+  const mult = Math.sqrt(S.heat[chm.a] * S.heat[chm.b]) * (same ? 0.7 : 1) * (rareOf(c, 'proton') ? 1.05 : 1) * (anti ? 1.15 : 1);
+  const tick = (chm.a.slice(0, 3) + chm.b.slice(0, 3) + (Math.random() < 0.5 ? '' : pick(['X', 'Z', 'Q', 'ON', 'IO']))).toUpperCase();
+  const coin = { id: S.nextCoin++, col: c.id, a: chm.a, b: chm.b, tick, t0: S.t, F: Math.exp(Math.log(0.08) + (anti ? 1.6 : 1.3) * gauss()) * mult, L: Math.exp(Math.log(120) + 0.9 * gauss()) * (rareOf(c, 'neutron') ? 1.15 : 1), fees: 0, alive: true, grad: false };
+  coin.gradAt = coin.F > 5 ? coin.F * 0.3 : -1;
+  S.coins.push(coin); c.live++; c.count++; S.collisions++;
+  S.last = { a: chm.a, b: chm.b, tick, col: c.id, t: S.t, n: S.collisions };
+  feedPush({ k: 'launch', col: c.id, a: chm.a, b: chm.b, tick });
+  if (Math.random() < 0.08 + 0.02 * c.det) {
+    let x = Math.random(), type = RARES[0].k; for (const q of RARES) { x -= q.p; if (x <= 0) { type = q.k; break; } }
+    const rp = { id: S.nextRare++, type, owner: user ? W.addr : c.owner, user, inst: null, sale: 0, t: S.t };
+    if (!user && Math.random() < 0.3 && S.rares.filter(x => !x.user && x.sale).length < 12) rp.sale = r50(rareValue(rp) * (0.8 + Math.random() * 0.6));
+    S.rares.push(rp);
+    if (user) toast(`Collision discovery: a ${R[type].name} particle! It’s in your rare particles.`);
+  }
+  if (user && S.speed <= 60) toast(`${pairName(chm.a, chm.b)} collided in collider #${c.id} and launched $${tick}`);
+  S.ver++;
+}
+function pay(coin, fee){
+  coin.fees += fee;
+  S.burnSol += fee * CFG.BURN; S.burned += fee * CFG.BURN / price(); S.ops += fee * CFG.OPS;
+  const c = cById.get(coin.col); if (!c) return;
+  const op = fee * CFG.OPER, renter = c.rent ? op * c.rent.share : 0;
+  c.rentUn += renter; c.unclaimed += op - renter; c.own += op - renter; c.rv += op;
+}
+function startRent(c, who, isUser, hours, cost, share){
+  c.rent = { who, user: isUser, until: S.t + hours * HOUR, share, hours }; c.rentUn = 0;
+  S.burned += cost * CFG.RENT_BURN;
+  if (c.user && !isUser) { S.wal.acc += cost * CFG.RENT_OWNER; toast(`Collider #${c.id} rented for ${hours === 1 ? '1 hour' : hours === 24 ? '1 day' : '1 week'}: +${fmtTok(cost * CFG.RENT_OWNER)} $ACCELERATE`); }
+  S.ver++;
+}
+function endRent(c){
+  if (c.rent.user && c.rentUn > 0) { S.wal.sol += c.rentUn; toast(`Rental of collider #${c.id} ended. ${fmtSol(c.rentUn)} SOL settled to your wallet.`); }
+  c.rentUn = 0; c.rent = null; S.ver++;
+}
+function step(dm){
+  const t0 = S.t; S.t += dm * 60;
+  for (const n of NARR) S.heat[n.k] = clamp(S.heat[n.k] * Math.exp(0.03 * gauss() * Math.sqrt(dm)) + (1 - S.heat[n.k]) * 0.002 * dm, 0.4, 2.2);
+  if (S.col.length < CFG.SUPPLY && Math.random() < dm * CFG.OTHER_RATE) { addOther(Math.random); S.ver++; }
+  for (const c of S.col) {
+    if (c.rent && S.t >= c.rent.until) endRent(c);
+    if (c.list && !c.rent && Math.random() < dm / 1100 * Math.max(0.05, Math.min(3, fair(c, c.list.share) / c.list.price))) { const x = Math.random(), d = DURS[x < 0.5 ? 0 : x < 0.9 ? 1 : 2]; startRent(c, randAddr(Math.random), false, d.h, c.list.price * d.h * (1 - d.off), c.list.share); }
+    for (const chm of c.ch.filter(x => S.t >= x.until)) { c.ch = c.ch.filter(x => x !== chm); collide(c, chm); }
+    const user = opIsUser(c);
+    if (user) {
+      if (Math.random() < dm / CFG.DISCOVER_MIN * (c.user && !c.count ? 2 : 1)) { const k = weightedNarr(); S.inv[k] = (S.inv[k] || 0) + 1; S.ver++; }
+      if ((TIERS[c.tier].auto && c.auto !== false) && c.ch.length + c.live < slotsOf(c) + 1 && c.ch.length < slotsOf(c)) { const p = bestPair(S.inv); if (p) { S.inv[p[0]]--; S.inv[p[1]]--; inject(c, p[0], p[1]); } }
+    } else if (c.ch.length < slotsOf(c) && c.ch.length + c.live < slotsOf(c) + 1 && Math.random() < dm / 50) { inject(c, weightedNarr(), weightedNarr()); }
+  }
+  for (const coin of S.coins) {
+    if (!coin.alive) continue;
+    const a0 = Math.max(0, (t0 - coin.t0) / 60), a1 = Math.max(0, (S.t - coin.t0) / 60);
+    const fee = coin.F * (Math.exp(-a0 / coin.L) - Math.exp(-a1 / coin.L));
+    if (fee > 0) pay(coin, fee);
+    if (!coin.grad && coin.gradAt > 0 && coin.fees >= coin.gradAt) { coin.grad = true; S.ver++; }
+    if (a1 > 3 * coin.L) { coin.alive = false; const c = cById.get(coin.col); if (c) c.live = Math.max(0, c.live - 1); S.ver++; }
+  }
+  for (const rp of S.rares) {
+    if (rp.user && rp.sale && Math.random() < dm / 400 * Math.max(0.05, Math.min(3, rareValue(rp) / rp.sale))) { S.wal.acc += rp.sale * (1 - CFG.SALE_ROYALTY); S.burned += rp.sale * CFG.SALE_ROYALTY; toast(`Your ${R[rp.type].name} sold for ${fmtTok(rp.sale)} $ACCELERATE`); rp.user = false; rp.owner = randAddr(Math.random); rp.sale = 0; S.ver++; }
+  }
+  if (Math.random() < dm / 3000) { const x = S.rares.find(rp => !rp.user && rp.sale); if (x) { x.sale = 0; S.ver++; } }
+  const decay = Math.exp(-dm * 60 / (7 * DAY)); for (const c of S.col) c.rv *= decay;
+  if (Math.floor(S.t / HOUR) !== Math.floor(t0 / HOUR)) {
+    S.coins = S.coins.filter(x => x.alive || x.grad || x.t0 > S.t - 10 * HOUR || cById.get(x.col)?.user);
+    S.rares = S.rares.filter(x => x.user || x.sale || x.t > S.t - DAY).slice(-200);
+    for (const c of S.col) if (c.list && !c.user) c.list.price = r50(fair(c, c.list.share) * c.list.k);
+  }
+}
+function advance(minutes){ while (minutes > 0) { const d = Math.min(5, minutes); step(d); minutes -= d; } }
+function newWorld(){
+  S = { v: 1, t: CFG.START_T - 2 * DAY, speed: 60, col: [], coins: [], rares: [], feed: [], heat: Object.fromEntries(NARR.map(n => [n.k, 0.7 + Math.random() * 0.8])), inv: {}, burned: 0, burnSol: 0, ops: 0, collisions: 0, last: null, wal: { sol: 30, acc: 250000 }, nextCoin: 1, nextRare: 1, ver: 0 };
+  cById = new Map();
+  const r = mulberry(137);
+  for (let i = 0; i < 36; i++) addOther(r);
+  advance(2 * 24 * 60);
+  S.feed = S.feed.slice(0, 40);
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load(){
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 1 && Array.isArray(s.col)) { S = s; reindex(); return; } } } catch (e) {}
+  newWorld();
+}
+
+/* ---------- wallet (Wallet Standard + injected providers, validated with @solana/web3.js) ---------- */
+const W = { list: [], addr: null, name: null, entry: null, kind: null, balance: null };
+const isMine = c => !!(c && c.user && W.addr && c.owner === W.addr);
+const isRenting = c => !!(c && c.rent && c.rent.user && W.addr && c.rent.who === W.addr);
+function addWallet(x){ if (!W.list.some(w => w.name.toLowerCase() === x.name.toLowerCase())) W.list.push(x); }
+const wsApi = { register: (...ws) => { ws.forEach(w => { try { if (w.features && w.features['standard:connect'] && (w.chains || []).some(c => String(c).startsWith('solana:'))) addWallet({ name: w.name, icon: w.icon, kind: 'standard', w }); } catch (e) {} }); return () => {}; } };
+try {
+  window.addEventListener('wallet-standard:register-wallet', ev => { try { ev.detail(wsApi); } catch (e) {} });
+  window.dispatchEvent(new CustomEvent('wallet-standard:app-ready', { detail: wsApi }));
+} catch (e) {}
+function detectInjected(){
+  const c = [['Phantom', window.phantom && window.phantom.solana], ['Solflare', window.solflare], ['Backpack', window.backpack], ['Solana wallet', window.solana]];
+  for (const [n, p] of c) {
+    if (!p || typeof p.connect !== 'function') continue;
+    const name = p.isPhantom ? 'Phantom' : p.isSolflare ? 'Solflare' : n;
+    if (!W.list.some(w => w.name.toLowerCase().startsWith(name.toLowerCase()))) addWallet({ name, icon: null, kind: 'injected', p });
+  }
+}
+function validAddr(a){
+  try { if (window.solanaWeb3 && solanaWeb3.PublicKey) return new solanaWeb3.PublicKey(a).toBase58(); } catch (e) { return null; }
+  return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a) ? a : null;
+}
+async function connectEntry(entry, silent){
+  let addr = null;
+  if (entry.kind === 'standard') {
+    const w = entry.w;
+    if (silent) { if (w.accounts && w.accounts.length) addr = w.accounts[0].address; else return false; }
+    else { const r = await w.features['standard:connect'].connect(); const acc = (r && r.accounts && r.accounts.length ? r.accounts : w.accounts)[0]; addr = acc && acc.address; }
+    try { w.features['standard:events'] && w.features['standard:events'].on('change', ({ accounts }) => { if (accounts && accounts.length) setWallet(accounts[0].address, entry); else clearWallet(); }); } catch (e) {}
+  } else {
+    const p = entry.p;
+    const r = await p.connect(silent ? { onlyIfTrusted: true } : undefined);
+    const pk = (r && r.publicKey) || p.publicKey; addr = pk && pk.toString();
+    try { p.on && p.on('accountChanged', pk => { if (pk) setWallet(pk.toString(), entry); else clearWallet(); }); } catch (e) {}
+  }
+  if (!addr) throw new Error('The wallet returned no account.');
+  setWallet(addr, entry);
+  return true;
+}
+function setWallet(addr, entry){
+  const ok = validAddr(addr);
+  if (!ok) { toast('That wallet returned an invalid Solana address.'); return; }
+  W.addr = ok; W.name = entry ? entry.name : 'Guest wallet'; W.entry = entry || null; W.kind = entry ? entry.kind : 'guest'; W.balance = null;
+  try { localStorage.setItem(KEYW, JSON.stringify({ name: W.name, kind: W.kind, addr: W.kind === 'guest' ? W.addr : null })); } catch (e) {}
+  for (const c of S.col) { if (c.user) c.owner = W.addr; if (c.rent && c.rent.user) c.rent.who = W.addr; }
+  for (const rp of S.rares) if (rp.user) rp.owner = W.addr;
+  paintWallet(); S.ver++; render(true);
+  if (W.kind !== 'guest') fetchBalance();
+}
+async function fetchBalance(){
+  if (!window.solanaWeb3 || !W.addr) return;
+  try {
+    const conn = new solanaWeb3.Connection(CFG.RPC, 'confirmed');
+    const lamports = await Promise.race([conn.getBalance(new solanaWeb3.PublicKey(W.addr)), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000))]);
+    W.balance = lamports / solanaWeb3.LAMPORTS_PER_SOL;
+  } catch (e) { W.balance = 'unavailable'; }
+  paintWallet();
+}
+async function clearWallet(){
+  const e = W.entry;
+  try { if (e && e.kind === 'standard' && e.w.features['standard:disconnect']) await e.w.features['standard:disconnect'].disconnect(); if (e && e.kind === 'injected' && e.p.disconnect) await e.p.disconnect(); } catch (err) {}
+  Object.assign(W, { addr: null, name: null, entry: null, kind: null, balance: null });
+  try { localStorage.removeItem(KEYW); } catch (err) {}
+  $('#walletMenu').hidden = true; paintWallet(); S.ver++; render(true);
+}
+function paintWallet(){
+  const b = $('#walletBtn');
+  if (W.addr) { b.className = 'btn connected'; b.innerHTML = `<i class="dot"></i><span>${short(W.addr)}</span>`; b.setAttribute('aria-label', `Wallet ${W.addr}, open menu`); }
+  else { b.className = 'btn vi'; b.innerHTML = `<i class="dot"></i><span>Connect wallet</span>`; b.setAttribute('aria-label', 'Connect wallet'); }
+  if (W.addr) {
+    const bal = W.kind === 'guest' ? fmtSol(S.wal.sol) + ' SOL' : W.balance == null ? 'Checking…' : W.balance === 'unavailable' ? 'Unavailable' : fmtSol(W.balance) + ' SOL';
+    $('#walletMenu').innerHTML = `<div class="rows"><div><label>Wallet</label><b>${esc(W.name)}</b></div><div><label>Address</label><b>${short(W.addr)}</b></div><div><label>Balance</label><b>${bal}</b></div><div><label>$ACCELERATE</label><b>${fmtTok(S.wal.acc)}</b></div></div>
+      <div class="mitems"><button data-act="copyAddr">Copy address</button>${W.kind !== 'guest' ? `<a href="https://solscan.io/account/${W.addr}" target="_blank" rel="noopener">View on Solscan</a>` : ''}<button data-act="disconnect">Disconnect</button></div>`;
+  }
+}
+function openWalletModal(){
+  detectInjected();
+  const items = W.list.map((w, i) => `<button class="wopt" data-act="pickWallet" data-i="${i}">${w.icon ? `<img src="${esc(w.icon)}" alt="">` : `<span class="ph-ico"></span>`}<span>${esc(w.name)}</span><em>Detected</em></button>`).join('');
+  modal(`<section class="panel modal" role="dialog" aria-modal="true" aria-labelledby="wt">
+    <h2 class="ph" id="wt">${ICO.mine} Connect a Solana wallet <button class="x" data-act="close" aria-label="Close">×</button></h2>
+    <div class="wlist">
+      ${items || `<p class="small" style="margin:0">No Solana wallet found in this browser. Install one, then reload this page.</p>
+        <a class="wopt" href="https://phantom.app/download" target="_blank" rel="noopener"><span class="ph-ico"></span>Get Phantom</a>
+        <a class="wopt" href="https://solflare.com/download" target="_blank" rel="noopener"><span class="ph-ico"></span>Get Solflare</a>
+        <a class="wopt" href="https://backpack.app/downloads" target="_blank" rel="noopener"><span class="ph-ico"></span>Get Backpack</a>`}
+      <button class="wopt" data-act="guestWallet"><span class="ph-ico" style="background:var(--vi)"></span><span>Continue as guest</span></button>
+      <p class="small" style="margin:4px 0 0">Connecting shares your public address only.</p>
+    </div></section>`);
+}
+async function eagerConnect(){
+  let saved = null; try { saved = JSON.parse(localStorage.getItem(KEYW) || 'null'); } catch (e) {}
+  if (!saved) return;
+  if (saved.kind === 'guest' && saved.addr) { setWallet(saved.addr, null); return; }
+  detectInjected();
+  const entry = W.list.find(w => w.name === saved.name);
+  if (entry) { try { await connectEntry(entry, true); } catch (e) {} }
+}
+
+/* ---------- the collider ring ---------- */
+function ringSVG(){
+  const cx = 170, cy = 80, rx = 150, ry = 58, path = `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 1 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 1 ${cx - rx} ${cy}`;
+  const pathR = `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy}`;
+  const L = S.last;
+  let s = `<svg class="ringsvg" viewBox="0 0 340 160" shape-rendering="crispEdges" role="img" aria-label="The collider ring: particles circulate in opposite directions and collide at the centre.${L ? ' Latest collision: ' + pairName(L.a, L.b) + ', launched $' + L.tick + '.' : ''}">`;
+  s += `<path id="orbitA" d="${path}" fill="none"/><path id="orbitB" d="${pathR}" fill="none"/>`;
+  s += `<ellipse class="track" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/><ellipse class="trackin" cx="${cx}" cy="${cy}" rx="${rx - 4}" ry="${ry - 4}"/>`;
+  [[cx - 12, cy - ry - 8], [cx - 12, cy + ry - 8]].forEach(([x, y]) => { s += `<rect class="mag" x="${x}" y="${y}" width="24" height="16"/><rect class="magin" x="${x + 5}" y="${y + 5}" width="14" height="6"/><rect x="${x + 8}" y="${y + 7}" width="8" height="2" fill="#B83CF2"/>`; });
+  [[cx - rx - 8, '#18AAF5'], [cx + rx - 16, '#B83CF2']].forEach(([x, col]) => { s += `<rect class="mag" x="${x}" y="${cy - 12}" width="24" height="24"/><rect class="magin" x="${x + 6}" y="${cy - 7}" width="12" height="14"/><rect x="${x + 9}" y="${cy - 4}" width="6" height="8" fill="${col}"/>`; });
+  s += `<rect class="beamL" x="${cx - rx + 16}" y="${cy - 1.5}" width="${rx - 22}" height="3"/><rect class="beamR" x="${cx + 6}" y="${cy - 1.5}" width="${rx - 22}" height="3"/><rect x="${cx - rx + 16}" y="${cy - .5}" width="${2 * rx - 32}" height="1" fill="#FFFFFF" opacity=".7"/>`;
+  for (let i = 0; i < 4; i++) s += `<g class="orbit"><rect x="-2" y="-2" width="4" height="4" fill="#5DDCFA"><animateMotion dur="${4 + i * 0.3}s" begin="${-i * 1.1}s" repeatCount="indefinite"><mpath href="#orbitA"/></animateMotion></rect></g><g class="orbit"><rect x="-2" y="-2" width="4" height="4" fill="#D27BFF"><animateMotion dur="${4 + i * 0.3}s" begin="${-i * 1.1 - .5}s" repeatCount="indefinite"><mpath href="#orbitB"/></animateMotion></rect></g>`;
+  s += `<g class="burst" data-n="${L ? L.n : 0}"><rect x="${cx - 7}" y="${cy - 7}" width="14" height="14" fill="#FFFFFF"/><rect x="${cx - 2}" y="${cy - 16}" width="4" height="32" fill="#FFFFFF"/><rect x="${cx - 16}" y="${cy - 2}" width="32" height="4" fill="#FFFFFF"/>`;
+  [[-26, -18, '#5DDCFA'], [22, -20, '#D27BFF'], [-30, 14, '#18AAF5'], [28, 16, '#B83CF2'], [-12, -26, '#FFFFFF'], [10, 24, '#FFFFFF']].forEach(([dx, dy, col]) => { s += `<rect x="${cx + dx}" y="${cy + dy}" width="4" height="4" fill="${col}"/>`; });
+  s += `</g>`;
+  if (L) s += `<text class="lab" x="${cx}" y="${cy - 30}" text-anchor="middle">LATEST COLLISION · COLLIDER #${L.col}</text><text class="pair" x="${cx}" y="${cy + 36}" text-anchor="middle">${esc(pairName(L.a, L.b))}</text><text class="tk" x="${cx}" y="${cy + 46}" text-anchor="middle">$${esc(L.tick)} LAUNCHED</text>`;
+  return s + '</svg>';
+}
+
+/* ---------- views ---------- */
+const TABS = [['ring','Collider',ICO.ring],['deploy','Deploy',ICO.deploy],['mine','My colliders',ICO.mine],['rare','Rare particles',ICO.rare],['rentals','Rentals',ICO.rent],['how','How it works',ICO.how],['docs','Docs',ICO.docs]];
+let tab = 'ring';
+const D = { tier: 0 };
+const M = { sort: 'value', dur: 1 };
+const LST = { id: 0, share: 0.7, mult: 1 };
+const INJ = {};
+const myCol = () => W.addr ? S.col.filter(isMine) : [];
+const myRent = () => W.addr ? S.col.filter(isRenting) : [];
+const opCol = () => [...myCol().filter(c => !c.rent), ...myRent()];
+const myRares = () => W.addr ? S.rares.filter(x => x.user && x.owner === W.addr) : [];
+const unTotal = () => myCol().reduce((a, c) => a + c.unclaimed, 0) + myRent().reduce((a, c) => a + c.rentUn, 0);
+const LIVE = {
+  burned: () => fmtTok(S.burned),
+  live: () => String(S.coins.filter(c => c.alive).length),
+  un: id => fmtSol(cById.get(+id)?.unclaimed) + ' SOL',
+  rentUn: id => fmtSol(cById.get(+id)?.rentUn) + ' SOL',
+  myUn: () => fmtSol(unTotal()) + ' SOL',
+  claimAll: () => 'Collect all · ' + fmtSol(unTotal()) + ' SOL',
+  ago: t => ago(+t),
+  left: t => left(+t)
+};
+function kv(label, val, k){ return `<div><label>${label}</label><b${k ? ` data-k="${k}"` : ''}>${val}</b></div>`; }
+function heatHTML(){ const mx = Math.max(...NARR.map(n => S.heat[n.k])); return `<div class="heat">${NARR.map(n => `<div>${n.name}<b>${S.heat[n.k].toFixed(2)}×</b><div class="hb"><s style="width:${(S.heat[n.k] / mx * 100).toFixed(0)}%"></s></div></div>`).join('')}</div>`; }
+
+let latestSnap = null, latestAt = 0, lastN = -1;
+function vRing(){
+  const n = S.col.length, nowR = performance.now();
+  if (!latestSnap || nowR - latestAt > 30000) { latestSnap = S.feed.filter(f => f.k === 'launch').slice(0, 6); latestAt = nowR; }
+  lastN = S.last ? S.last.n : -1;
+  return `<div class="grid-hero"><div class="col">
+  <section class="panel">
+    <h2 class="ph">${ICO.ring} Status <small>the accelerator network right now</small></h2>
+    <div class="pad">
+      <label>Colliders deployed</label>
+      <div class="big"><b>${n}</b><span>/ ${CFG.SUPPLY.toLocaleString('en-US')}</span></div>
+      <div class="kv4">
+        ${kv('Deploy price', fmtSol(mintPrice(n + 1)) + ' SOL')}
+        ${kv('Accelerating', S.col.reduce((a, c) => a + c.ch.length, 0) + ' pairs')}
+        ${kv('Collisions', S.collisions)}
+        ${kv('$ACCELERATE burned', fmtTok(S.burned), 'burned')}
+      </div>
+      <button class="btn vi wide" data-go="deploy">Deploy a collider</button>
+    </div>
+  </section>
+  <section class="panel">
+    <h2 class="ph">${ICO.coin} $ACCELERATE <small>token</small></h2>
+    <div class="kv2"><div><label>Project</label><b>Accelerate</b></div><div><label>Ticker</label><b>$ACCELERATE</b></div></div>
+    ${CFG.X ? `<div class="btnrow"><a class="btn" href="${esc(CFG.X)}" target="_blank" rel="noopener">Follow @AccelerateRent on X</a></div>` : ''}
+  </section>
+  </div>
+  <section class="panel hero">
+    <h2 class="ph">${ICO.burst} The collider <small>live collisions across the network</small></h2>
+    <div class="hero-copy">
+      <h1><span class="a">Accelerate particles.</span> <span class="b">Collide narratives.</span> Generate tokens.</h1>
+      <p>Each collider is an NFT that turns emerging narratives into particles, accelerates them in pairs, and collides them into new coin concepts on pump.fun. Every collision can also discover a rare particle.</p>
+    </div>
+    <div class="ringwrap" id="ringwrap">${ringSVG()}</div>
+    <h3 class="ph" style="border-top:1px solid var(--rule);margin-top:16px">${ICO.atom} Narrative heat <small>how hot each particle is right now</small></h3>
+    <div id="heatwrap">${heatHTML()}</div>
+  </section>
+  </div>
+  <section class="panel mt">
+    <h2 class="ph">${ICO.docs} Latest collisions <small>pairs that just produced coins</small><button class="link end" data-go="rare">Rare particles</button></h2>
+    ${latestSnap.length ? `<div class="feed">${latestSnap.map(x => `<div><span class="pr">${NN[x.a]}<i>×</i>${NN[x.b]}</span><b>$${esc(x.tick)}</b><p>Collider #${x.col}</p><span class="ago" data-k="ago:${x.t}">${ago(x.t)}</span></div>`).join('')}</div>`
+      : `<div class="empty">${logoSVG()}<span>No collisions yet.</span></div>`}
+  </section>
+  <section class="panel mt">
+    <h2 class="ph">${ICO.how} How it works <small>seven steps</small><button class="link end" data-go="how">All the rules</button></h2>
+    ${stepsHTML()}
+  </section>`;
+}
+function stepsHTML(){
+  const st = [
+    [logoSVG(), 'Deploy a collider', 'Buy a virtual particle accelerator, a tradable NFT.'],
+    [ICO.atom, 'Generate particles', 'AI agents find emerging narratives and turn them into particles.'],
+    [ICO.ring, 'Accelerate particles', 'Inject two particles into a chamber; they gain energy over time.'],
+    [ICO.burst, 'Initiate collisions', 'At full energy they collide into a new coin concept combining both narratives.'],
+    [ICO.coin, 'Launch tokens', 'Successful collisions launch autonomously on pump.fun.'],
+    [ICO.coin, 'Collect creator fees', '60% of each coin’s creator fees goes to its parent collider.'],
+    [ICO.rare, 'Upgrade accelerators', 'Reinvest in magnets, detectors, bigger colliders and rare particles.']
+  ];
+  return `<div class="steps">${st.map((x, i) => `<div>${x[0]}<span class="n">${pad2(i + 1)}</span><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join('')}</div>`;
+}
+
+function vDeploy(){
+  const n = S.col.length + 1, fee = mintPrice(n), tr = TIERS[D.tier];
+  const shortSol = S.wal.sol < fee, shortA = S.wal.acc < tr.unlock, can = W.addr && n <= CFG.SUPPLY && !shortSol && !shortA;
+  return `<div class="grid-2"><div class="col">
+  <section class="panel step">
+    <h2 class="ph"><b>Step 1</b> <small>choose an energy level</small><span class="tag vi end">Now</span></h2>
+    <div class="pad"><h3>How much energy?</h3>
+      <p>Bigger colliders run more collision chambers at once. From the Cyclotron up, they pick and inject the hottest pairs on their own.</p>
+      <div class="opts">${TIERS.map((d, i) => `<button class="opt" data-act="pickTier" data-i="${i}" aria-pressed="${D.tier === i}"><span class="rings" aria-hidden="true">${'<i></i>'.repeat(d.slots)}</span><b>${d.short}</b><span>${d.cap}</span>
+        <dl><dt>Chambers</dt><dd>${d.slots}</dd><dt>Auto</dt><dd>${d.auto ? 'Yes' : 'No'}</dd><dt>Unlock</dt><dd>${d.unlock ? fmtTok(d.unlock) : 'Free'}</dd></dl></button>`).join('')}</div>
+      <p class="note">Collisions and launches do not guarantee returns. Hot narratives start stronger, but each coin is its own bet.</p>
+    </div>
+  </section>
+  <section class="panel step">
+    <h2 class="ph"><b>Step 2</b> <small>${fmtSol(fee)} SOL to deploy</small></h2>
+    <div class="pad"><h3>Deploy collider #${Math.min(n, CFG.SUPPLY)}</h3>
+      <p>Half the price buys and burns $ACCELERATE, half funds operations. The tier unlock is burned. It ships with four particles, so you can run your first collision right away.</p>
+      ${!W.addr ? `<button class="btn dark" data-act="wallet">Connect wallet to deploy</button>`
+        : `<button class="btn dark" data-act="deploy" ${can ? '' : 'disabled'}>Deploy ${tr.name}</button>${shortSol ? `<p class="warn" style="margin:12px 0 0">Not enough SOL in your wallet.</p>` : ''}${shortA ? `<p class="warn" style="margin:12px 0 0">You need ${fmtTok(tr.unlock)} $ACCELERATE for a ${tr.name}.</p>` : ''}`}
+    </div>
+  </section></div>
+  <aside class="col">
+    <section class="panel"><h2 class="ph">${ICO.deploy} You get <small>after step 2</small></h2>
+      <div class="youget">${colArt({ tier: D.tier, ch: [1], live: 0 })}<div><b>${tr.short}</b><span>${tr.name}<br>${tr.slots} chamber${tr.slots > 1 ? 's' : ''}${tr.auto ? ', automated' : ''}</span></div></div>
+    </section>
+    <section class="panel"><h2 class="ph">${ICO.coin} Summary <small>what moves</small></h2>
+      <div class="rows">
+        ${kv('Deploy price', fmtSol(fee) + ' SOL')}
+        ${kv('Tier unlock (burned)', tr.unlock ? fmtTok(tr.unlock) + ' $ACCELERATE' : 'Free')}
+        ${kv('Your share of fees', '60%')}
+        ${kv('Wallet $ACCELERATE', fmtTok(S.wal.acc))}
+      </div>
+    </section>
+  </aside></div>`;
+}
+
+function upRow(c, k){
+  const u = UP[k], l = c[k], max = l >= u.max, cost = u.cost(l);
+  return `<div class="up"><b>${u.name}<span class="pips">${Array.from({ length: u.max }, (_, i) => `<i class="${i < l ? 'on' : ''}"></i>`).join('')}</span></b><small>${max ? 'Maxed out' : u.eff}</small><button class="btn sm" data-act="upgrade" data-id="${c.id}" data-k="${k}" ${max || S.wal.acc < cost ? 'disabled' : ''}>${max ? 'Maxed' : 'Upgrade · ' + fmtTok(cost)}</button></div>`;
+}
+function chambersHTML(c){
+  const sel = INJ[c.id] || (INJ[c.id] = { a: null, b: null });
+  return `<div class="chambers">${Array.from({ length: slotsOf(c) }, (_, i) => {
+    const chm = c.ch[i];
+    if (chm) { const p = clamp((S.t - chm.t0) / (chm.until - chm.t0), 0, 1); return `<div class="ch"><b>Chamber ${i + 1}</b><span class="pairl">${NN[chm.a]}<i>×</i>${NN[chm.b]}</span><div class="energy" aria-label="Energy ${(p * 100).toFixed(0)}%"><i style="width:${(p * 100).toFixed(0)}%"></i></div><small>${(p * 100).toFixed(0)}% energy · collides in <span data-k="left:${chm.until}">${left(chm.until)}</span></small></div>`; }
+    if (i > c.ch.length) return `<div class="ch"><b>Chamber ${i + 1}</b><small>Empty. Opens for injection once chamber ${c.ch.length + 1} is running.</small></div>`;
+    const inv = NARR.filter(n => (S.inv[n.k] || 0) > 0);
+    const avail = k => (S.inv[k] || 0) - (sel.a === k ? 1 : 0);
+    return `<div class="ch"><b>Chamber ${i + 1}</b><small>Pick two particles to inject</small>
+      ${inv.length ? `<div class="seg">${NARR.map(n => { const cnt = S.inv[n.k] || 0; if (!cnt) return ''; const on = sel.a === n.k || sel.b === n.k; return `<button class="chip ${sel.a === n.k ? 'cyp' : ''}" data-act="pickP" data-id="${c.id}" data-k="${n.k}" aria-pressed="${on}" ${!on && sel.a && avail(n.k) < 1 ? 'disabled' : ''}>${n.name} ×${cnt}</button>`; }).join('')}</div>` : `<small>No particles yet. Your detectors find one about every ${CFG.DISCOVER_MIN} minutes.</small>`}
+      ${sel.a ? `<span class="pairl">${NN[sel.a]}<i>×</i>${sel.b ? NN[sel.b] : '…'}</span>` : ''}
+      <div class="btns"><button class="btn sm vi" data-act="inject" data-id="${c.id}" ${sel.a && sel.b ? '' : 'disabled'}>Inject pair</button>${sel.a ? `<button class="btn sm" data-act="clearP" data-id="${c.id}">Clear</button>` : ''}</div></div>`;
+  }).join('')}</div>`;
+}
+function vMine(){
+  if (!W.addr) return `<section class="panel"><h2 class="ph">${ICO.mine} My colliders</h2>
+    <div class="empty">${logoSVG()}<span>Connect a wallet to see your colliders and particles.</span><button class="btn vi" data-act="wallet">Connect wallet</button></div></section>`;
+  const cols = [...myCol(), ...myRent()], totalInv = NARR.reduce((a, n) => a + (S.inv[n.k] || 0), 0);
+  return `<section class="panel"><h2 class="ph">${ICO.mine} My colliders <small>fees wait until you collect them</small></h2>
+    <div class="kv5">
+      <div><label>Colliders</label><b>${myCol().length}${myRent().length ? ' + ' + myRent().length + ' rented' : ''}</b></div>
+      <div><label>Particles</label><b>${totalInv}</b></div>
+      <div><label>Accelerating</label><b>${cols.reduce((a, c) => a + c.ch.length, 0)}</b></div>
+      <div><label>Ready to collect</label><b class="g" data-k="myUn">${LIVE.myUn()}</b></div>
+      <div><label>$ACCELERATE</label><b>${fmtTok(S.wal.acc)}</b></div>
+    </div>
+    <div class="actions">
+      <button class="btn vi" data-act="claimAll" data-k="claimAll">${LIVE.claimAll()}</button>
+      <button class="btn" data-go="rare">Rare particles</button>
+      <button class="btn" data-go="deploy">Deploy a collider</button>
+      <button class="btn" data-act="buyAcc" ${S.wal.sol < 1 ? 'disabled' : ''}>Swap 1 SOL for $ACCELERATE</button>
+    </div>
+  </section>
+  <section class="panel mt"><h2 class="ph">${ICO.atom} Particle detector <small>narratives your colliders have captured · heat shown</small></h2>
+    ${totalInv ? `<div class="inv">${NARR.filter(n => S.inv[n.k] > 0).map(n => `<span><i></i>${n.name} ×${S.inv[n.k]} · ${S.heat[n.k].toFixed(2)}×</span>`).join('')}</div>` : `<div class="empty">${logoSVG()}<span>No particles yet. Each collider you run captures one about every ${CFG.DISCOVER_MIN} minutes, weighted toward hot narratives.</span></div>`}
+  </section>
+  ${cols.length ? `<section class="panel mt"><h2 class="ph">${ICO.ring} Your colliders</h2>
+    ${cols.map(c => { const nx = TIERS[c.tier + 1], mine = isMine(c), inst = S.rares.filter(x => x.inst === c.id);
+      return `<div class="crow"><div class="chead"><div>${colArt(c)}</div>
+      <div><h3>#${c.id} <span class="tag ghost">${TIERS[c.tier].name}</span>${isRenting(c) ? `<span class="tag vi">Rented, ${left(c.rent.until)} left</span>` : ''}</h3>
+        <div class="stats"><div><label>Chambers</label><b>${c.ch.length} / ${slotsOf(c)}</b></div><div><label>Coins launched</label><b>${c.count}</b></div><div><label>${mine ? 'Ready to collect' : 'Your share'}</label><b data-k="${mine ? 'un' : 'rentUn'}:${c.id}">${mine ? LIVE.un(c.id) : LIVE.rentUn(c.id)}</b></div><div><label>Acceleration</label><b>${Math.round(accelMin(c))} min</b></div></div>
+        ${inst.length ? `<p class="small" style="margin:0 0 10px">Installed: ${inst.map(x => R[x.type].name).join(', ')}</p>` : ''}
+        ${mine ? `<div class="btns"><button class="btn sm vi" data-act="claim" data-id="${c.id}">Collect</button></div>` : ''}</div>
+      <div>${mine ? `<div class="rentbox">${c.rent ? `<b>Rented out</b><p>To ${short(c.rent.who)} for ${left(c.rent.until)} more. They keep ${Math.round(c.rent.share * 100)}% of the operator share.</p>`
+          : c.list ? `<b>Listed for rent</b><p>${fmtTok(c.list.price)} $ACCELERATE an hour, researcher keeps ${Math.round(c.list.share * 100)}%.</p><div class="btns"><button class="btn sm" data-act="listOpen" data-id="${c.id}">Edit</button><button class="btn sm" data-act="unlist" data-id="${c.id}">Unlist</button></div>`
+          : `<b>Not listed</b><p>Lease collision capacity to researchers for $ACCELERATE and a share of creator fees.</p><button class="btn sm vi" data-act="listOpen" data-id="${c.id}">List for rent</button>`}</div>
+        ${TIERS[c.tier].auto ? `<div class="up"><b>Automated collisions</b><small>${c.auto !== false ? 'Injects the hottest pair whenever a chamber frees up.' : 'Off: you pick every pair.'}</small><div class="seg"><button class="chip" data-act="setAuto" data-id="${c.id}" data-v="1" aria-pressed="${c.auto !== false}">On</button><button class="chip" data-act="setAuto" data-id="${c.id}" data-v="0" aria-pressed="${c.auto === false}">Off</button></div></div>` : ''}
+        ${nx ? `<div class="up"><b>Upgrade to ${nx.name}</b><small>${nx.slots} chambers · ${nx.cap.toLowerCase()}</small><button class="btn sm" data-act="tierUp" data-id="${c.id}" ${S.wal.acc < nx.unlock - TIERS[c.tier].unlock ? 'disabled' : ''}>Unlock · ${fmtTok(nx.unlock - TIERS[c.tier].unlock)}</button></div>` : ''}
+        ${upRow(c, 'mag')}${upRow(c, 'det')}` : `<p class="small" style="margin:0">Owner ${short(c.owner)} keeps the rest of the operator share and the rental payment. Your particles work here too.</p>`}</div></div>
+      ${chambersHTML(c)}</div>`; }).join('')}
+  </section>` : `<section class="panel mt"><div class="empty">${logoSVG()}<span>No colliders yet. Deploy one or rent one.</span><button class="btn sm vi" data-go="deploy">Deploy a collider</button></div></section>`}`;
+}
+
+function vRare(){
+  const mine = myRares(), market = S.rares.filter(x => !x.user && x.sale).sort((a, b) => RARES.findIndex(q => q.k === b.type) - RARES.findIndex(q => q.k === a.type)).slice(0, 18);
+  const cols = myCol();
+  const counts = RARES.map(q => mine.filter(x => x.type === q.k && !x.inst && !x.sale).length);
+  return `<section class="panel"><h2 class="ph">${ICO.rare} Rare particles <small>tradable NFTs discovered in collisions</small></h2>
+    <div class="pbody"><p>Every successful collision has a chance to discover a rare particle; better detectors raise it. Install one in a collider for its bonus, combine three of a kind into the next type up, or sell it. Each sale burns a 5% royalty.</p></div>
+    <div class="tw" style="border-top:1px solid var(--rule)"><table><thead><tr><th>Particle</th><th>Unlocks</th><th>Installed bonus</th><th class="r">Discovery odds</th><th class="r">You hold</th></tr></thead><tbody>${RARES.map((q, i) => `<tr><td><b style="color:${q.col}">${q.name}</b></td><td>${q.fn}</td><td>${q.eff}</td><td class="r">${(q.p * 100).toFixed(0)}%</td><td class="r">${mine.filter(x => x.type === q.k).length}</td></tr>`).join('')}</tbody></table></div>
+    ${W.addr ? `<div class="actions">${RARES.slice(0, -1).map((q, i) => `<button class="btn sm" data-act="combine" data-k="${q.k}" ${counts[i] >= 3 ? '' : 'disabled'}>Combine 3 ${q.name} → 1 ${RARES[i + 1].name}</button>`).join('')}</div>` : ''}
+  </section>
+  <section class="panel mt"><h2 class="ph">${ICO.rare} Your rare particles <small>${mine.length}</small></h2>
+    ${!W.addr ? `<div class="empty">${logoSVG()}<span>Connect a wallet to see your discoveries.</span><button class="btn vi" data-act="wallet">Connect wallet</button></div>`
+      : mine.length ? `<div class="rares">${mine.map(x => { const q = R[x.type], c = x.inst ? cById.get(x.inst) : null;
+        const target = cols.find(cc => !S.rares.some(r2 => r2.inst === cc.id && r2.type === x.type));
+        return `<div class="rare">${orb(x)}<h4>${q.name} #${x.id}</h4><p>${q.eff}. ${c ? `Installed in collider #${c.id}.` : x.sale ? `For sale at ${fmtTok(x.sale)}.` : 'In your wallet.'}</p>
+          <div class="btns">${c ? `<button class="btn sm" data-act="uninstall" data-id="${x.id}">Remove</button>` : x.sale ? `<button class="btn sm" data-act="unsell" data-id="${x.id}">Unlist</button>` : `${target ? `<button class="btn sm vi" data-act="install" data-id="${x.id}" data-c="${target.id}">Install in #${target.id}</button>` : ''}<button class="btn sm" data-act="sell" data-id="${x.id}">Sell · ${fmtTok(rareValue(x))}</button>`}</div></div>`; }).join('')}</div>`
+      : `<div class="empty">${logoSVG()}<span>No discoveries yet. Every successful collision has a chance.</span></div>`}
+  </section>
+  <section class="panel mt"><h2 class="ph">${ICO.rare} Particle market <small>${market.length} for sale</small></h2>
+    ${market.length ? `<div class="rares">${market.map(x => { const q = R[x.type]; return `<div class="rare">${orb(x)}<h4>${q.name} #${x.id}</h4><p>${q.eff}.</p><div class="btns">${!W.addr ? `<button class="btn sm" data-act="wallet">Connect wallet</button>` : `<button class="btn sm vi" data-act="buyRare" data-id="${x.id}" ${S.wal.acc < x.sale ? 'disabled' : ''}>Buy · ${fmtTok(x.sale)}</button>`}</div></div>`; }).join('')}</div>`
+      : `<div class="empty">${logoSVG()}<span>No rare particles for sale right now.</span></div>`}
+  </section>`;
+}
+
+function vRentals(){
+  const d = DURS[M.dur], list = S.col.filter(c => c.list);
+  list.sort((a, b) => (!!a.rent - !!b.rent) || (M.sort === 'price' ? a.list.price - b.list.price : M.sort === 'tier' ? b.tier - a.tier : (b.list.share * hourly(b) / b.list.price) - (a.list.share * hourly(a) / a.list.price)));
+  const segb = (key, val, label) => `<button class="chip" data-act="m" data-key="${key}" data-val="${val}" aria-pressed="${String(M[key]) === String(val)}">${label}</button>`;
+  return `<section class="panel"><h2 class="ph">${ICO.rent} Colliders for rent <small>${list.length} listed · experiment without owning a collider</small></h2>
+    <div class="filters">
+      <div class="seg"><span>Rent for</span>${DURS.map((x, i) => segb('dur', i, x.name + (x.off ? ` (−${x.off * 100}%)` : ''))).join('')}</div>
+      <div class="seg"><span>Sort</span>${segb('sort','value','Best value')}${segb('sort','tier','Biggest')}${segb('sort','price','Price')}</div>
+    </div>
+    ${list.length ? `<div class="lists">${list.map(c => { const cost = c.list.price * d.h * (1 - d.off), mine = isMine(c);
+      return `<div class="lcard">${colArt(c)}<div><h4>#${c.id}${mine ? '<span class="tag vi">Yours</span>' : ''}</h4>
+        <dl><dt>Collider</dt><dd>${TIERS[c.tier].name}</dd><dt>Chambers</dt><dd>${slotsOf(c)}</dd><dt>Revenue</dt><dd>${fmtSol(hourly(c))} SOL/h</dd><dt>Researcher keeps</dt><dd>${Math.round(c.list.share * 100)}%</dd><dt>Price</dt><dd>${fmtTok(c.list.price)} /h</dd></dl>
+        ${c.rent ? `<button class="btn sm" disabled>Rented, back in ${left(c.rent.until)}</button>` : mine ? `<button class="btn sm" data-go="mine">Manage listing</button>`
+          : !W.addr ? `<button class="btn sm" data-act="wallet">Connect wallet</button>`
+          : `<button class="btn sm vi" data-act="rent" data-id="${c.id}" ${S.wal.acc < cost ? 'disabled' : ''}>Rent ${d.name} · ${fmtTok(cost)}</button>`}
+      </div></div>`; }).join('')}</div>` : `<div class="empty">${logoSVG()}<span>No colliders listed right now.</span></div>`}
+  </section>`;
+}
+function listModal(id){
+  const c = cById.get(+id); if (!isMine(c)) return;
+  if (LST.id !== c.id) { LST.id = c.id; LST.share = c.list ? c.list.share : 0.7; LST.mult = 1; }
+  const p = r50(fair(c, LST.share) * LST.mult);
+  modal(`<section class="panel modal" role="dialog" aria-modal="true" aria-labelledby="lt">
+    <h2 class="ph" id="lt">${ICO.rent} List collider #${c.id} for rent <button class="x" data-act="close" aria-label="Close">×</button></h2>
+    <div class="pad">
+      <label>Researcher keeps</label>
+      <div class="seg" style="margin-bottom:16px">${[0.5,0.6,0.7,0.8].map(s => `<button class="chip" data-act="lsShare" data-v="${s}" aria-pressed="${LST.share === s}">${s * 100}%</button>`).join('')}</div>
+      <label>Hourly price</label>
+      <div class="seg" style="margin-bottom:16px">${[[0.8,'Fill fast'],[1,'Suggested'],[1.3,'Premium']].map(([m, t]) => `<button class="chip" data-act="lsMult" data-v="${m}" aria-pressed="${LST.mult === m}">${t}</button>`).join('')}</div>
+      <div class="rows" style="border:1px solid var(--rule);margin-bottom:16px">${kv('Price per hour', fmtTok(p) + ' $ACCELERATE')}${kv('You receive', '90% of each payment, plus your fee share')}${kv('Burned', '10% of each payment')}</div>
+      <button class="btn vi wide" data-act="listSave" data-id="${c.id}" data-p="${p}">${c.list ? 'Update listing' : 'List collider #' + c.id}</button>
+    </div></section>`);
+}
+
+function vHow(){
+  const sq = Array.from({ length: 100 }, (_, i) => `<i class="${i < 60 ? 'sq-a' : i < 85 ? 'sq-b' : 'sq-c'}"></i>`).join('');
+  return `<section class="panel"><h2 class="ph">${ICO.how} How it works <small>token creation as a particle physics experiment</small></h2>${stepsHTML()}</section>
+  <section class="panel mt"><h2 class="ph">${ICO.burst} The particle collision engine</h2>
+    <div class="collide"><div><b style="color:var(--cy-ink)">AI particle</b><span>Artificial intelligence narrative</span></div><i>×</i><div><b style="color:var(--vi-ink)">DeFi particle</b><span>Decentralized finance narrative</span></div><i>→</i><div class="res"><b>New token: AI × DeFi</b><span>An AI-generated concept combining both narratives</span></div></div>
+    <p class="note" style="margin:0 18px 18px">A coin’s starting momentum follows the heat of both narratives at the moment of collision. Colliding a particle with its own narrative works, but produces a less novel concept.</p>
+  </section>
+  <div class="two mt">
+    <section class="panel"><h2 class="ph">${ICO.ring} Collider energy levels</h2>
+      <div class="tw"><table><thead><tr><th>Collider</th><th>Capability</th><th class="r">Chambers</th></tr></thead><tbody>${TIERS.map(t => `<tr><td><b>${t.name}</b></td><td>${t.cap}</td><td class="r">${t.slots}</td></tr>`).join('')}</tbody></table></div>
+    </section>
+    <section class="panel"><h2 class="ph">${ICO.rare} Particle discovery</h2>
+      <div class="tw"><table><thead><tr><th>Particle</th><th>Unlocks</th></tr></thead><tbody>${RARES.map(q => `<tr><td><b style="color:${q.col}">${q.name}</b></td><td>${q.fn}</td></tr>`).join('')}</tbody></table></div>
+    </section>
+  </div>
+  <section class="panel mt"><h2 class="ph">${ICO.coin} Where every creator fee goes <small>100 squares, one per percent</small></h2>
+    <div class="split"><div class="squares" aria-hidden="true">${sq}</div></div>
+    <div class="splitkeys">
+      <div><span class="k"><i class="sq-a"></i>The collider</span><b>60%</b><p>Its operator. Owners and researchers split it at the listed share.</p></div>
+      <div><span class="k"><i class="sq-b"></i>Buy and burn</span><b>25%</b><p>A defined share of actual protocol revenue that buys and burns $ACCELERATE.</p></div>
+      <div><span class="k"><i class="sq-c"></i>Operations</span><b>15%</b><p>Pays for the AI agents and the keeper.</p></div>
+    </div>
+  </section>
+  <section class="panel mt"><h2 class="ph">${ICO.rent} Collider rentals</h2>
+    <div class="pbody"><p>Owners lease collision capacity for $ACCELERATE by the hour, day or week and set the researcher’s share of creator fees. 90% of each payment goes to the owner and 10% is burned. Researchers run their own particles through the rented chambers.</p></div>
+  </section>
+  <section class="panel mt"><h2 class="ph">${ICO.ring} The flywheel <small>creator-fee revenue depends on real trading activity</small></h2>
+    <div class="fly">
+      <div><span class="n">1</span><b>Deploy colliders</b><span>Users buy and rent particle accelerators.</span></div>
+      <div><span class="n">2</span><b>Generate collisions</b><span>AI agents combine emerging narratives.</span></div>
+      <div><span class="n">3</span><b>Launch tokens</b><span>Successful experiments become pump.fun coins.</span></div>
+      <div><span class="n">4</span><b>Collect creator fees</b><span>Coins generate potential trading-fee revenue.</span></div>
+      <div><span class="n">5</span><b>Expand infrastructure</b><span>Revenue funds upgrades, rentals and experiments.</span></div>
+      <div><span class="n">6</span><b>Buy back $ACCELERATE</b><span>A defined share of actual protocol revenue funds buybacks and burns.</span></div>
+    </div>
+  </section>`;
+}
+
+const DOCS = [
+  ['overview','Overview', () => `<p>Accelerate is a Solana launchpad of autonomous particle colliders. Each <strong>collider</strong> is an NFT whose AI agents turn emerging narratives into <strong>particles</strong>. Two particles injected into a chamber accelerate to full energy and collide into a new coin concept, which launches on pump.fun with the collider as creator. 60% of each coin’s creator fees goes to the collider.</p>`],
+  ['deploying','Deploying', () => `<p>The deploy price rises evenly from 0.25 SOL for #1 to 1.25 SOL for #1,000: <code>0.25 + 1.0 × (n − 1) / 999</code>. Half buys and burns $ACCELERATE, half funds operations. Energy-level unlocks are paid in $ACCELERATE and burned.</p>`],
+  ['collisions','Collisions', () => `<p>Each collider you run captures a particle about every ${CFG.DISCOVER_MIN} minutes, weighted toward hotter narratives. A pair takes about ${CFG.ACCEL_MIN} minutes to reach full energy, faster with magnets and Electrons. Collisions succeed ${77}% to ${97}% of the time depending on detectors; a failed collision uses up its particles and launches nothing.</p>
+    <h4>Launch rules</h4><ul><li>No real people’s names or likeness, and no implied endorsement.</li><li>No existing brands, and no ticker that is already live on pump.fun.</li><li>No promises of returns in any coin or its promotion.</li><li>Every coin description says which collider produced it and from which narratives.</li></ul>`],
+  ['rares','Rare particles', () => `<div class="tw"><table><thead><tr><th>Particle</th><th>Installed bonus</th><th class="r">Odds</th></tr></thead><tbody>${RARES.map(q => `<tr><td><strong>${q.name}</strong></td><td>${q.eff}</td><td class="r">${(q.p * 100).toFixed(0)}%</td></tr>`).join('')}</tbody></table></div>
+    <p>A collider holds one rare particle of each type. Three of a kind combine into one of the next type up. Sales burn a 5% royalty.</p>`],
+  ['fees','Fees', () => `<div class="tw"><table><thead><tr><th>To</th><th class="r">Share</th></tr></thead><tbody><tr><td>The collider’s operator</td><td class="r">60%</td></tr><tr><td>$ACCELERATE buy and burn</td><td class="r">25%</td></tr><tr><td>Operations</td><td class="r">15%</td></tr></tbody></table></div>`],
+  ['rentals','Rentals', () => `<p>Owners list colliders by the hour, day or week, priced in $ACCELERATE, and choose the researcher’s share: 50% to 80%. A day is 10% cheaper per hour, a week 25% cheaper. Each payment settles when the rental starts: 90% to the owner, 10% burned.</p>`],
+  ['token','$ACCELERATE', () => `<p>$ACCELERATE is the pad’s token, launched on pump.fun. It pays for upgrades, unlocks, rentals and rare particles. A defined share of actual protocol revenue funds buybacks and burns.</p>`],
+  ['faq','FAQ', () => [
+      ['Does colliding hot narratives guarantee a winner?','No. Heat raises a coin’s starting momentum, but each coin is its own bet.'],
+      ['Who is the creator of the coins?','The collider. Its address is set as the coin’s creator on pump.fun, and the fee split is locked in the same transaction.'],
+      ['What happens to installed rare particles if I sell my collider?','They go with it, along with its history and unclaimed fees. Remove any you want to keep first.']
+    ].map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')],
+  ['risks','Risks', () => `<ul><li>Most coins on pump.fun stop trading within days.</li><li>Collisions and launches do not guarantee returns.</li><li>pump.fun can change its fee rates or creator fee program at any time.</li><li>Smart contracts and autonomous agents can have bugs even after testing.</li></ul>`]
+];
+function vDocs(){
+  return `<div class="docs"><nav class="panel toc" aria-label="Docs contents"><h2 class="ph">${ICO.docs} Docs <small>contents</small></h2>
+    <ol>${DOCS.map((d, i) => `<li><button data-act="docjump" data-id="${d[0]}"><span>${pad2(i + 1)}</span>${d[1]}</button></li>`).join('')}</ol></nav>
+    <div class="col">${DOCS.map(d => `<section class="panel doc" id="doc-${d[0]}"><h2 class="ph">${d[1]}</h2><div class="body">${d[2]()}</div></section>`).join('')}</div></div>`;
+}
+
+/* ---------- render ---------- */
+let lastVer = -1, lastTab = '', lastRender = 0, lastFull = 0;
+const VIEWS = { ring: vRing, deploy: vDeploy, mine: vMine, rare: vRare, rentals: vRentals, how: vHow, docs: vDocs };
+function render(force){
+  const now = performance.now();
+  const dynamic = !(tab === 'how' || tab === 'docs');
+  if (!force && tab === lastTab && (!dynamic || S.ver === lastVer || now - lastRender < 2000)) {
+    if (tab !== 'mine' || now - lastRender < 5000) return;
+  }
+  if (!force && tab === 'ring' && now - lastFull < 12000) {
+    lastVer = S.ver; lastRender = now;
+    const n = S.last ? S.last.n : -1;
+    if (n !== lastN) { lastN = n; const w = $('#ringwrap'); if (w) w.innerHTML = ringSVG(); const h = $('#heatwrap'); if (h) h.innerHTML = heatHTML(); }
+    return;
+  }
+  lastVer = S.ver; lastTab = tab; lastRender = now; lastFull = now;
+  const y = window.scrollY;
+  $('#view').innerHTML = VIEWS[tab]();
+  window.scrollTo(0, y);
+}
+function paintTabs(){ $('#tabs').innerHTML = TABS.map(([k, label, icon], i) => `<a href="#${k}"${tab === k ? ' aria-current="page"' : ''}>${icon}<span>${label}</span><em>${i + 1}</em></a>`).join(''); }
+function updateLive(){ document.querySelectorAll('[data-k]').forEach(el => { const [k, a] = el.dataset.k.split(':'); const f = LIVE[k]; if (!f) return; const v = f(a); if (el.textContent !== v) el.textContent = v; }); }
+function route(){ const h = location.hash.replace('#', ''); tab = VIEWS[h] ? h : 'ring'; paintTabs(); render(true); updateLive(); }
+
+/* ---------- overlays ---------- */
+let lastFocus = null;
+function modal(html){ if (!$('#overlay').innerHTML) lastFocus = document.activeElement; $('#overlay').innerHTML = `<div class="scrim" data-act="scrim">${html}</div>`; const f = $('#overlay').querySelector('[aria-pressed="true"],button,a'); f && f.focus(); }
+function closeModal(){ $('#overlay').innerHTML = ''; LST.id = 0; lastFocus && lastFocus.focus && lastFocus.focus(); }
+function toast(msg){ const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; const box = $('#toasts'); box.appendChild(t); while (box.children.length > 3) box.firstChild.remove(); setTimeout(() => t.remove(), 3800); }
+
+/* ---------- actions ---------- */
+const after = () => { S.ver++; render(true); updateLive(); };
+document.addEventListener('click', async ev => {
+  const go = ev.target.closest('[data-go]');
+  if (go) { if ($('#overlay').innerHTML) closeModal(); location.hash = '#' + go.dataset.go; return; }
+  const a = ev.target.closest('[data-act]');
+  if (!a) { if (!ev.target.closest('.walletcell')) $('#walletMenu').hidden = true; return; }
+  const act = a.dataset.act;
+  if (act === 'scrim') { if (ev.target === a) closeModal(); return; }
+  switch (act) {
+    case 'close': closeModal(); break;
+    case 'wallet':
+      if (W.addr && a.id === 'walletBtn') { const m = $('#walletMenu'); paintWallet(); m.hidden = !m.hidden; }
+      else openWalletModal();
+      break;
+    case 'pickWallet': {
+      const entry = W.list[+a.dataset.i];
+      a.disabled = true; const em = a.querySelector('em'); if (em) em.textContent = 'Approve in wallet…';
+      try { await connectEntry(entry, false); closeModal(); toast(`Connected ${short(W.addr)}`); }
+      catch (err) { a.disabled = false; if (em) em.textContent = 'Detected'; toast(err && err.message && /reject|denied|cancel/i.test(err.message) ? 'Connection request was declined in the wallet.' : 'Couldn’t connect. Unlock the wallet and try again.'); }
+      break; }
+    case 'guestWallet': setWallet(randAddr(Math.random), null); closeModal(); toast('Connected as guest'); break;
+    case 'disconnect': clearWallet(); toast('Wallet disconnected'); break;
+    case 'copyAddr': try { await navigator.clipboard.writeText(W.addr); toast('Address copied'); } catch (e) { toast(W.addr); } break;
+    case 'pickTier': D.tier = +a.dataset.i; render(true); break;
+    case 'deploy': {
+      const n = S.col.length + 1, fee = mintPrice(n), tr = TIERS[D.tier]; if (!W.addr || n > CFG.SUPPLY || S.wal.sol < fee || S.wal.acc < tr.unlock) break;
+      S.wal.sol -= fee; S.wal.acc -= tr.unlock; S.burnSol += fee * 0.5; S.burned += fee * 0.5 / price() + tr.unlock; S.ops += fee * 0.5;
+      const c = { id: n, owner: W.addr, user: true, tier: D.tier, mag: 1, det: 1, auto: true, ch: [], live: 0, count: 0, unclaimed: 0, rentUn: 0, own: 0, rv: 0, list: null, rent: null, t: S.t };
+      S.col.push(c); cById.set(c.id, c);
+      const hot = NARR.slice().sort((x, y) => S.heat[y.k] - S.heat[x.k]);
+      [hot[0].k, hot[1].k, hot[2].k, hot[3].k].forEach(k => S.inv[k] = (S.inv[k] || 0) + 1);
+      save(); toast(`Collider #${n} is online with four particles. Inject a pair to start your first collision.`); location.hash = '#mine'; after(); break; }
+    case 'pickP': { const sel = INJ[a.dataset.id] || (INJ[a.dataset.id] = { a: null, b: null }), k = a.dataset.k;
+      if (!sel.a) sel.a = k; else if (!sel.b) sel.b = k; else { sel.a = k; sel.b = null; } render(true); break; }
+    case 'clearP': INJ[a.dataset.id] = { a: null, b: null }; render(true); break;
+    case 'inject': { const c = cById.get(+a.dataset.id), sel = INJ[a.dataset.id]; if (!c || !(isMine(c) || isRenting(c)) || !sel || !sel.a || !sel.b || c.ch.length >= slotsOf(c)) break;
+      const need = {}; need[sel.a] = (need[sel.a] || 0) + 1; need[sel.b] = (need[sel.b] || 0) + 1; if (Object.keys(need).some(k => (S.inv[k] || 0) < need[k])) break;
+      S.inv[sel.a]--; S.inv[sel.b]--; inject(c, sel.a, sel.b); toast(`${pairName(sel.a, sel.b)} injected into collider #${c.id}. Accelerating.`); INJ[a.dataset.id] = { a: null, b: null }; after(); break; }
+    case 'setAuto': { const c = cById.get(+a.dataset.id); if (!isMine(c)) break; c.auto = a.dataset.v === '1'; after(); break; }
+    case 'claim': { const c = cById.get(+a.dataset.id); if (!isMine(c)) break; const v = c.unclaimed; S.wal.sol += v; c.unclaimed = 0; toast(v > 0 ? `Collected ${fmtSol(v)} SOL` : 'Nothing to collect yet'); after(); break; }
+    case 'claimAll': { let v = 0; for (const c of myCol()) { v += c.unclaimed; c.unclaimed = 0; } for (const c of myRent()) { v += c.rentUn; c.rentUn = 0; } S.wal.sol += v; toast(v > 0 ? `Collected ${fmtSol(v)} SOL` : 'Nothing to collect yet'); after(); break; }
+    case 'buyAcc': if (S.wal.sol >= 1) { const t = 1 / price(); S.wal.sol -= 1; S.wal.acc += t; toast(`Swapped 1 SOL for ${fmtTok(t)} $ACCELERATE`); after(); } break;
+    case 'upgrade': { const c = cById.get(+a.dataset.id), k = a.dataset.k; if (!isMine(c) || c[k] >= UP[k].max) break; const cost = UP[k].cost(c[k]); if (S.wal.acc < cost) break; S.wal.acc -= cost; S.burned += cost; c[k]++; toast(`${UP[k].name} are now level ${c[k]}. ${fmtTok(cost)} $ACCELERATE burned.`); after(); break; }
+    case 'tierUp': { const c = cById.get(+a.dataset.id); if (!isMine(c) || c.tier >= 4) break; const cost = TIERS[c.tier + 1].unlock - TIERS[c.tier].unlock; if (S.wal.acc < cost) break; S.wal.acc -= cost; S.burned += cost; c.tier++; toast(`Collider #${c.id} is now a ${TIERS[c.tier].name}. ${fmtTok(cost)} $ACCELERATE burned.`); after(); break; }
+    case 'combine': { const k = a.dataset.k, i = RARES.findIndex(q => q.k === k); const pool = myRares().filter(x => x.type === k && !x.inst && !x.sale).slice(0, 3); if (pool.length < 3 || i >= RARES.length - 1) break; S.rares = S.rares.filter(x => !pool.includes(x)); const nr = { id: S.nextRare++, type: RARES[i + 1].k, owner: W.addr, user: true, inst: null, sale: 0, t: S.t }; S.rares.push(nr); toast(`Three ${RARES[i].name}s combined into a ${RARES[i + 1].name}`); after(); break; }
+    case 'install': { const x = S.rares.find(r2 => r2.id === +a.dataset.id), c = cById.get(+a.dataset.c); if (!x || !isMine(c) || x.inst || x.sale) break; x.inst = c.id; toast(`${R[x.type].name} installed in collider #${c.id}`); after(); break; }
+    case 'uninstall': { const x = S.rares.find(r2 => r2.id === +a.dataset.id); if (!x) break; x.inst = null; after(); break; }
+    case 'sell': { const x = S.rares.find(r2 => r2.id === +a.dataset.id); if (!x || x.inst) break; x.sale = rareValue(x); toast(`${R[x.type].name} listed for ${fmtTok(x.sale)} $ACCELERATE`); after(); break; }
+    case 'unsell': { const x = S.rares.find(r2 => r2.id === +a.dataset.id); if (!x) break; x.sale = 0; after(); break; }
+    case 'buyRare': { const x = S.rares.find(r2 => r2.id === +a.dataset.id); if (!x || x.user || !x.sale || !W.addr || S.wal.acc < x.sale) break; S.wal.acc -= x.sale; S.burned += x.sale * CFG.SALE_ROYALTY; x.user = true; x.owner = W.addr; x.sale = 0; toast(`You bought ${R[x.type].name} #${x.id}`); after(); break; }
+    case 'm': M[a.dataset.key] = a.dataset.key === 'dur' ? +a.dataset.val : a.dataset.val; render(true); break;
+    case 'listOpen': LST.id = 0; listModal(a.dataset.id); break;
+    case 'lsShare': LST.share = +a.dataset.v; listModal(LST.id); break;
+    case 'lsMult': LST.mult = +a.dataset.v; listModal(LST.id); break;
+    case 'listSave': { const c = cById.get(+a.dataset.id); if (!isMine(c)) break; c.list = { share: LST.share, price: +a.dataset.p, k: LST.mult }; closeModal(); toast(`Collider #${c.id} listed at ${fmtTok(c.list.price)} $ACCELERATE an hour`); after(); break; }
+    case 'unlist': { const c = cById.get(+a.dataset.id); if (!isMine(c)) break; c.list = null; after(); break; }
+    case 'rent': {
+      const c = cById.get(+a.dataset.id), d = DURS[M.dur]; if (!W.addr || !c || !c.list || c.rent || isMine(c)) break;
+      const cost = c.list.price * d.h * (1 - d.off); if (S.wal.acc < cost) break;
+      S.wal.acc -= cost; startRent(c, W.addr, true, d.h, cost, c.list.share);
+      toast(`You’re running collider #${c.id} for ${d.name}. You keep ${Math.round(c.list.share * 100)}% of the operator share.`); location.hash = '#mine'; after(); break; }
+    case 'docjump': { const el = document.getElementById('doc-' + a.dataset.id); el && el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); break; }
+  }
+  if (act !== 'wallet' && !a.closest('#walletMenu')) $('#walletMenu').hidden = true;
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if ($('#overlay').innerHTML) closeModal(); $('#walletMenu').hidden = true; } });
+window.addEventListener('hashchange', route);
+
+/* ---------- boot ---------- */
+load();
+S.speed = 60;
+route();
+paintWallet();
+setTimeout(eagerConnect, 500);
+let lastTick = performance.now(), lastSave = 0;
+setInterval(() => {
+  const now = performance.now(), dt = Math.min(2, (now - lastTick) / 1000); lastTick = now;
+  if (S.speed > 0) advance(S.speed * dt / 60);
+  updateLive(); render(false);
+  if (now - lastSave > 5000) { save(); lastSave = now; }
+}, 250);
+window.addEventListener('pagehide', save);
+</script>
+</body>
+</html>
